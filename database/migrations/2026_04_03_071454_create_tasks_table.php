@@ -15,13 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('assignee_id')->constrained('users')->cascadeOnDelete();
-            $table->timestamps();
             $table->string('title');
-            $table->string('description');
+            $table->text('description')->nullable();
             $table->enum('status', ['todo', 'doing', 'done', 'blocked']);
             $table->enum('priority', ['low', 'normal', 'high']);
             $table->date('due_date')->nullable();
             $table->integer('estimate_minutes')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

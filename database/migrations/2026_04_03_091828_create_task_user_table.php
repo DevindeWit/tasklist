@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('task_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('task_id')->constrained()->cascadeOnDelete();
-
             $table->boolean('notify_email')->default(true);
-
             $table->primary(['user_id', 'task_id']);
+            $table->softDeletes();
         });
     }
 

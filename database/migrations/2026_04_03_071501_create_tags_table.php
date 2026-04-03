@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
-            $table->string('hex_color', 6);
+            $table->string('hex_color', 7);
             $table->string('description')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

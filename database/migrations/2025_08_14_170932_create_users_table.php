@@ -19,8 +19,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->enum('role', ['admin', 'manager', 'member'])->default('member');
+            $table->softDeletes();
             $table->timestamps();
-            $table->enum('role', ['admin', 'manager', 'user'])->default('user');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

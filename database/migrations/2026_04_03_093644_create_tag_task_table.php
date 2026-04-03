@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('tag_task', function (Blueprint $table) {
             $table->foreignId('task_id')->constrained()->cascadeOnDelete();
             $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
-
-            // extra pivot columns
             $table->foreignId('added_by')->constrained('users')->cascadeOnDelete();
             $table->timestamp('added_at');
-
-            // prevent duplicate tag-task combos
             $table->primary(['task_id', 'tag_id']);
+            $table->softDeletes();
         });
     }
 

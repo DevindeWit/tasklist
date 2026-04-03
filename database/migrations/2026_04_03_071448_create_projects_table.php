@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
             $table->string('code');
-            $table->string('description');
+            $table->text('description')->nullable;
             $table->enum('status', ['active', 'on_hold', 'archived']);
             $table->foreignId('team_id')->constrained()->cascadeOnDelete();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
