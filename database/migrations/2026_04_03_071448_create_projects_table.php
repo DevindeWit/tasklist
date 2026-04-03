@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('description');
             $table->enum('status', ['active', 'on_hold', 'archived']);
-            $table->id('team_id');
+            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
         });
     }
 
