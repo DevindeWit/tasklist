@@ -10,22 +10,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['name', 'email', 'password', 'role', 'team_id'])]
+#[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -47,26 +43,31 @@ class User extends Authenticatable
             ->implode('');
     }
 
-    /**
-     * Get the team that the user belongs to.
-     */
-    public function team(): BelongsTo
+    public function ownedTeams(): HasMany
     {
-        return $this->belongsTo(Team::class);
+        return $this->hasMany(Team::class, 'owner_id');
     }
 
-    /**
-     * Get the tasks assigned to the user.
-     */
-    public function tasks(): HasMany
+    public function teams(): BelongsToMany
     {
-        // The second argument specifies the foreign key on the 'tasks' table
+        return $this->belongsToMany(Team::class)
+            ->withTimestamps();
+    }
+
+    public function assignedTasks(): HasMany
+    {
         return $this->hasMany(Task::class, 'assignee_id');
     }
 
     public function watchedTasks(): BelongsToMany
     {
-        return $this->belongsToMany(Task::class)
-            ->withPivot('notify_email');
+        return $this->belongsToMany(Task::class, 'task_user')
+            ->withPivot('notify_email')
+            ->withTimestamps();
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }

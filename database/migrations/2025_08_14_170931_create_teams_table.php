@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
+            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

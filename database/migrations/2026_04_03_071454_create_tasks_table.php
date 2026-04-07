@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('assignee_id')->constrained('users')->cascadeOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['todo', 'doing', 'done', 'blocked']);
-            $table->enum('priority', ['low', 'normal', 'high']);
+            $table->enum('status', ['todo', 'doing', 'done', 'blocked'])->default('todo');
+            $table->enum('priority', ['low', 'normal', 'high'])->default('normal');
             $table->date('due_date')->nullable();
             $table->integer('estimate_minutes')->nullable();
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('assignee_id')->nullable()->constrained('users')->nullOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

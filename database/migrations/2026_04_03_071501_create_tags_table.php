@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('hex_color', 7);
+            $table->string('hex_color', 7)->default('#FFFFFF');
             $table->string('description')->nullable();
             $table->softDeletes();
             $table->timestamps();

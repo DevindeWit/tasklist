@@ -3,24 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Team extends Model
 {
     use SoftDeletes;
-    /**
-     * Get the users that belong to the team.
-     */
-    public function users(): HasMany
+
+    public function owner() : BelongsTo
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
-    /**
-     * Get the projects that belong to the team.
-     */
-    public function projects(): HasMany
+    public function members() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function projects() : HasMany
     {
         return $this->hasMany(Project::class);
     }
