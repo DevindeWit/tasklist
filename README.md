@@ -75,7 +75,7 @@ Make sure MySQL is running locally and the database exists.
 ### 6. Run migrations
 
 ```bash
-php artisan migrate:fresh
+php artisan migrate
 ```
 
 ---
@@ -85,6 +85,11 @@ php artisan migrate:fresh
 ```bash
 php artisan db:seed
 ```
+
+After running the seeder on the database, you can log in with the admin super user account
+
+Email: `admin@test.com`
+Password: `password`
 
 ---
 
