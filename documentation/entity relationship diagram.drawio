@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
   <diagram name="Database Schema" id="n_NJZyyOM-yTj5c_7WgJ">
-    <mxGraphModel dx="888" dy="421" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1188" dy="721" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -14,7 +14,7 @@
           <mxGeometry height="30" width="170" y="60" as="geometry" />
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-4" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=none;perimeterSpacing=0;rounded=1;shadow=0;" value="User" vertex="1">
-          <mxGeometry height="120" width="140" x="645" y="276" as="geometry">
+          <mxGeometry height="90" width="140" x="645" y="276" as="geometry">
             <mxRectangle height="30" width="70" x="486.5" y="360" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
@@ -23,9 +23,6 @@
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-6" parent="FN2pjmPILrDiDy3MOQ90-4" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="String: email" vertex="1">
           <mxGeometry height="30" width="140" y="60" as="geometry" />
-        </mxCell>
-        <mxCell id="FN2pjmPILrDiDy3MOQ90-7" parent="FN2pjmPILrDiDy3MOQ90-4" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Enum: role (admin, manager, member)" vertex="1">
-          <mxGeometry height="30" width="140" y="90" as="geometry" />
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-9" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=none;perimeterSpacing=0;rounded=1;shadow=0;" value="Project" vertex="1">
           <mxGeometry height="180" width="140" x="225" y="571" as="geometry" />
@@ -109,7 +106,7 @@
           <mxGeometry height="30" width="170" y="90" as="geometry" />
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-36" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;swimlaneFillColor=none;perimeterSpacing=0;rounded=1;shadow=0;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="ManyToMany Tags_Task" vertex="1">
-          <mxGeometry height="150" width="170" x="298.5" y="76" as="geometry" />
+          <mxGeometry height="150" width="170" x="320" y="76" as="geometry" />
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-37" parent="FN2pjmPILrDiDy3MOQ90-36" style="text;strokeColor=#d79b00;fillColor=#ffe6cc;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;rounded=1;fillStyle=dots;" value="ForeignID: tag_id" vertex="1">
           <mxGeometry height="30" width="170" y="30" as="geometry" />
@@ -226,13 +223,16 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-52" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;swimlaneFillColor=none;perimeterSpacing=0;rounded=1;shadow=0;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="ManyToMany Team_User" vertex="1">
-          <mxGeometry height="90" width="170" x="880" y="500" as="geometry" />
+          <mxGeometry height="120" width="170" x="880" y="500" as="geometry" />
         </mxCell>
-        <mxCell id="FN2pjmPILrDiDy3MOQ90-53" parent="FN2pjmPILrDiDy3MOQ90-52" style="text;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fillStyle=dots;rounded=1;" value="ForeignID: user_id (team members)" vertex="1">
+        <mxCell id="FN2pjmPILrDiDy3MOQ90-53" parent="FN2pjmPILrDiDy3MOQ90-52" style="text;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fillStyle=dots;rounded=1;" value="ForeignID: user_id" vertex="1">
           <mxGeometry height="30" width="170" y="30" as="geometry" />
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-56" parent="FN2pjmPILrDiDy3MOQ90-52" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fillStyle=dots;rounded=1;" value="ForeignID: team_id" vertex="1">
           <mxGeometry height="30" width="170" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FN2pjmPILrDiDy3MOQ90-7" parent="FN2pjmPILrDiDy3MOQ90-52" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Enum: role (admin, manager, member)" vertex="1">
+          <mxGeometry height="30" width="170" y="90" as="geometry" />
         </mxCell>
         <mxCell id="FN2pjmPILrDiDy3MOQ90-57" edge="1" parent="1" source="FN2pjmPILrDiDy3MOQ90-4" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERmany;rounded=1;fontFamily=Helvetica;fontColor=default;fontStyle=0;horizontal=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#dae8fc;strokeColor=#6c8ebf;startArrow=ERmany;" target="FN2pjmPILrDiDy3MOQ90-53" value="">
           <mxGeometry height="100" relative="1" width="100" as="geometry">
