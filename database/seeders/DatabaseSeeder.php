@@ -9,7 +9,6 @@ use App\Models\Tag;
 use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Database\Seeder;
-use Nette\Utils\Random;
 
 class DatabaseSeeder extends Seeder
 {
