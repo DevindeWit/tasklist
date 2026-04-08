@@ -17,27 +17,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create exactly 8 Tags
+        // Create exactly 8 Tags
         $tags = Tag::factory(8)->create();
 
         for ($i = 0; $i < 2; $i++) {
 
-            // A. Create the Manager (role only per team, not global)
+            // Create the Manager (role only per team, not global)
             $manager = User::factory()->create([
                 'email' => "manager{$i}@example.com",
             ]);
 
-            // B. Create the Team and assign the Manager as owner
+            // Create the Team and assign the Manager as owner
             $team = Team::factory()->create([
                 'owner_id' => $manager->id,
             ]);
 
-            // C. Attach Manager WITH ROLE using pivot model
+            // Attach Manager WITH ROLE using pivot model
             $team->members()->syncWithoutDetaching([
                 $manager->id => ['user_role' => 'manager']
             ]);
 
-            // D. Create Members
+            // Create Members
             $members = User::factory(3)->create();
 
             // Attach Members WITH ROLE using pivot model
@@ -50,14 +50,14 @@ class DatabaseSeeder extends Seeder
             // All users in this team (fresh from pivot)
             $teamUsers = $team->members;
 
-            // E. Create Projects
+            // Create Projects
             $projects = Project::factory(4)->create([
                 'team_id' => $team->id
             ]);
 
             foreach ($projects as $project) {
 
-                // F. Create Tasks
+                // Create Tasks
                 $tasks = Task::factory(6)->create([
                     'project_id' => $project->id,
                     'assignee_id' => $teamUsers->random()->id
@@ -65,19 +65,19 @@ class DatabaseSeeder extends Seeder
 
                 foreach ($tasks as $task) {
 
-                    // G. Attach Tags
+                    // Attach Tags
                     $task->tags()->attach(
                         $tags->random(rand(1, 3))->pluck('id'),
                         ['added_by' => $teamUsers->random()->id]
                     );
 
-                    // H. Attach Watchers
+                    // Attach Watchers
                     $task->watchers()->attach(
                         $teamUsers->random(rand(1, 2))->pluck('id'),
                         ['notify_email' => fake()->boolean()]
                     );
 
-                    // I. Create Comments
+                    // Create Comments
                     Comment::factory(rand(0, 3))->create([
                         'task_id' => $task->id,
                         'user_id' => $teamUsers->random()->id
