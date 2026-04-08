@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('team_id')->constrained()->cascadeOnDelete();
 
-            $table->enum('user_role', ['admin', 'manager', 'member'])->default('member');
+            $table->enum('user_role', ['manager', 'member'])->default('member');
 
             $table->softDeletes();
             $table->timestamps();

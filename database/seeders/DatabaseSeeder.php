@@ -9,6 +9,7 @@ use App\Models\Tag;
 use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Database\Seeder;
+use Nette\Utils\Random;
 
 class DatabaseSeeder extends Seeder
 {
@@ -58,7 +59,9 @@ class DatabaseSeeder extends Seeder
             foreach ($projects as $project) {
 
                 // Create Tasks
-                $tasks = Task::factory(6)->create([
+                $rnd = random_int(4, 8);
+
+                $tasks = Task::factory($rnd)->create([
                     'project_id' => $project->id,
                     'assignee_id' => $teamUsers->random()->id
                 ]);
@@ -90,6 +93,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'admin@test.com',
+            'is_super_user' => true
         ]);
     }
 }

@@ -21,6 +21,7 @@ return new class extends Migration {
             // Due to changes in relations setup, this was moved to ManyToMany between User and Team
             // $table->enum('role', ['admin', 'manager', 'member'])->default('member');
 
+            $table->boolean('is_super_user')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
