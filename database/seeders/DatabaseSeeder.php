@@ -51,16 +51,13 @@ class DatabaseSeeder extends Seeder
             $teamUsers = $team->members;
 
             // Create Projects
-            $projects = Project::factory(4)->create([
+            $projects = Project::factory(random_int(3, 5))->create([
                 'team_id' => $team->id
             ]);
 
             foreach ($projects as $project) {
 
-                // Create Tasks
-                $rnd = random_int(4, 8);
-
-                $tasks = Task::factory($rnd)->create([
+                $tasks = Task::factory(random_int(4, 8))->create([
                     'project_id' => $project->id,
                     'assignee_id' => $teamUsers->random()->id
                 ]);
