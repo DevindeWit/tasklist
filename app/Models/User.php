@@ -66,8 +66,8 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function getTeam(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(Team::class, 'team_id');
+        return $this->belongsTo(Team::class, 'team_id', 'id');
     }
 }
