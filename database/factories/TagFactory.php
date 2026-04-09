@@ -20,7 +20,7 @@ class TagFactory extends Factory
         return [
             'name' => fake()->unique()->word(),
             'hex_color' => fake()->hexColor(),
-            'description' => rand(0, 1) ? fake()->sentence() : null,
+            'description' => fake()->optional()->sentence(),
         ];
     }
 }
