@@ -17,11 +17,8 @@ return new class extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-
-            // Due to changes in relations setup, this was moved to ManyToMany between User and Team
-            // $table->enum('role', ['admin', 'manager', 'member'])->default('member');
-
-            $table->boolean('is_super_user')->default(false);
+            $table->enum('role', ['admin', 'manager', 'member'])->default('member');
+            $table->foreignId('team_id')->nullable()->constrained()->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

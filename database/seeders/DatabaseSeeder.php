@@ -12,84 +12,77 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // Create exactly 8 Tags
-        $tags = Tag::factory(8)->create();
+        // 1. Seed Global Tags first
+        $tags = Tag::factory(12)->create();
 
-        for ($i = 0; $i < 2; $i++) {
+        // 2. Seed Teams using a loop
+        Team::factory(3)->create()->each(function ($team) use ($tags) {
 
-            // Create the Manager (role only per team, not global)
+            // Create the Manager and assign them as the Team Owner
             $manager = User::factory()->create([
-                'email' => "manager{$i}@example.com",
+                'role' => 'manager',
+                'team_id' => $team->id,
+            ]);
+            $team->update(['owner_id' => $manager->id]);
+
+            // Create Members for this team
+            $members = User::factory(4)->create([
+                'team_id' => $team->id,
+                'role' => 'member',
             ]);
 
-            // Create the Team and assign the Manager as owner
-            $team = Team::factory()->create([
-                'owner_id' => $manager->id,
-            ]);
+            $allTeamUsers = $members->push($manager);
 
-            // Attach Manager WITH ROLE using pivot model
-            $team->members()->syncWithoutDetaching([
-                $manager->id => ['user_role' => 'manager']
-            ]);
-
-            // Create Members
-            $members = User::factory(3)->create();
-
-            // Attach Members WITH ROLE using pivot model
-            $team->members()->syncWithoutDetaching(
-                $members->pluck('id')->mapWithKeys(fn($id) => [
-                    $id => ['user_role' => 'member']
-                ])->toArray()
-            );
-
-            // All users in this team (fresh from pivot)
-            $teamUsers = $team->members;
-
-            // Create Projects
-            $projects = Project::factory(random_int(3, 5))->create([
+            // 3. Create Projects for the team
+            Project::factory(rand(2, 4))->create([
                 'team_id' => $team->id
-            ]);
+            ])->each(function ($project) use ($allTeamUsers, $tags) {
 
-            foreach ($projects as $project) {
-
-                $tasks = Task::factory(random_int(5, 8))->create([
+                // 4. Create Tasks for each project
+                Task::factory(rand(4, 7))->create([
                     'project_id' => $project->id,
-                    'assignee_id' => $teamUsers->random()->id
-                ]);
+                    'assignee_id' => $allTeamUsers->random()->id,
+                ])->each(function ($task) use ($allTeamUsers, $tags) {
 
-                foreach ($tasks as $task) {
+                    // 5. Seed Pivot Data: Tagging
+                    // We loop so each tag can have a DIFFERENT 'added_by' user
+                    $randomTags = $tags->random(rand(1, 3));
+                    foreach ($randomTags as $tag) {
+                        $task->tags()->attach($tag->id, [
+                            'added_by' => $allTeamUsers->random()->id,
+                            'created_at' => now(),
+                        ]);
+                    }
 
-                    // Attach Tags
-                    $task->tags()->attach(
-                        $tags->random(rand(1, 3))->pluck('id'),
-                        ['added_by' => $teamUsers->random()->id]
-                    );
-
-                    // Attach Watchers
+                    // 6. Seed Pivot Data: Watchers
                     $task->watchers()->attach(
-                        $teamUsers->random(rand(1, 2))->pluck('id'),
+                        $allTeamUsers->random(rand(1, 2))->pluck('id'),
                         ['notify_email' => fake()->boolean()]
                     );
 
-                    // Create Comments
-                    Comment::factory(rand(0, 3))->create([
+                    // 7. Seed Comments
+                    Comment::factory(rand(1, 3))->create([
                         'task_id' => $task->id,
-                        'user_id' => $teamUsers->random()->id
+                        'user_id' => $allTeamUsers->random()->id
                     ]);
-                }
-            }
-        }
+                });
 
-        // Optional global Admin (not tied to team roles)
+                // 8. ADD VARIETY: Seed a couple of Soft-Deleted tasks
+                Task::factory(2)->trashed()->create([
+                    'project_id' => $project->id,
+                    'assignee_id' => $allTeamUsers->random()->id,
+                ]);
+            });
+        });
+
+        // 9. Global Admin
         User::factory()->create([
-            'name' => 'Super Admin',
+            'name' => 'System Admin',
             'email' => 'admin@test.com',
-            'is_super_user' => true
+            'role' => 'admin',
+            'team_id' => null,
         ]);
     }
 }

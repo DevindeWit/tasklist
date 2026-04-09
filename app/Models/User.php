@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'is_super_user'])]
+#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
@@ -46,15 +46,6 @@ class User extends Authenticatable
     public function ownedTeams(): HasMany
     {
         return $this->hasMany(Team::class, 'owner_id');
-    }
-
-    public function teams(): BelongsToMany
-    {
-        return $this->belongsToMany(Team::class)
-            ->using(TeamUser::class)
-            ->withPivot('user_role', 'deleted_at')
-            ->wherePivotNull('deleted_at')
-            ->withTimestamps();
     }
 
     public function assignedTasks(): HasMany
