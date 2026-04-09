@@ -19,8 +19,8 @@ class ProjectFactory extends Factory
     {
         return [
             'name' => fake()->words(3, true),
-            'code' => strtoupper(fake()->bothify('??-###')),
-            'description' => fake()->paragraph(),
+            'code' => strtoupper(fake()->lexify('???-###')),
+            'description' => fake()->sentence(),
             'status' => fake()->randomElement(['active', 'on_hold', 'archived']),
         ];
     }
