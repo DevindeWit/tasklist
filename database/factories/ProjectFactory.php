@@ -18,9 +18,9 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->words(3, true),
-            'code' => strtoupper(fake()->lexify('???-###')),
-            'description' => fake()->sentence(),
+            'name' => rand(0, 1) ? fake()->words(3, true) : fake()->words(2, true),
+            'code' => strtoupper(fake()->bothify('???-###')),
+            'description' => rand(0, 1) ? fake()->sentence() : null,
             'status' => fake()->randomElement(['active', 'on_hold', 'archived']),
         ];
     }
