@@ -12,9 +12,24 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')" class="grid">
+
+                    {{-- Sidebar items --}}
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="user-circle" :href="route('team')" :current="request()->routeIs('team')" wire:navigate>
+                        {{ __('Team') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="folder-open" :href="route('projects')" :current="request()->routeIs('projects')" wire:navigate>
+                        {{ __('Projects') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="calendar-days" :href="route('tasks')" :current="request()->routeIs('tasks')" wire:navigate>
+                        {{ __('Tasks') }}
+                    </flux:sidebar.item>
+
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
