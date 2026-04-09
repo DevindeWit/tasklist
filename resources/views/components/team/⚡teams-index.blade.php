@@ -4,10 +4,12 @@ use Livewire\Component;
 
 new class extends Component
 {
-    //
+
 };
 ?>
 
 <div>
-    <h2>Hey hi!</h2>
+    @if (! auth()->user()?->team_id)
+        <x-team.no-team-found />
+    @endif
 </div>
