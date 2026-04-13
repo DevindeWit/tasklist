@@ -69,5 +69,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@test.com'
         ]);
+
+        // 5. Lesser user for testing
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@test.com'
+        ]);
     }
 }
