@@ -26,6 +26,6 @@
     </flux:modal>
 
     <flux:modal name="create-team">
-        <x-team.create-team />
+        <livewire:team.create-team />
     </flux:modal>
 </div>

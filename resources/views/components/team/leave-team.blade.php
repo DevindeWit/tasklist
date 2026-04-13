@@ -7,15 +7,15 @@ new class extends Component {
     {
         auth()->user()->update(['team_id' => null]);
 
-        $this->redirect(route('team'));
+        $this->dispatch('close');
+        $this->dispatch('teamUpdated');
     }
 };
-
 ?>
 
-<div class="space-y-6">
-    <flux:heading size="lg">Leave Team</flux:heading>
-    <flux:text class="mt-2">Are you sure you want to leave this team?</flux:text>
+<div>
+    <flux:heading>Leave Team</flux:heading>
+    <flux:text>Are you sure you want to leave this team? This action cannot be undone.</flux:text>
 
     <div class="flex gap-3 mt-6">
         <flux:button variant="outline" @click="$dispatch('close')">Cancel</flux:button>
