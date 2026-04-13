@@ -11,4 +11,6 @@
             Create
         </flux:button>
     </div>
+
+    <flux:text class="text-center">Being in a team is required to access projects and tasks</flux:text>
 </div>
