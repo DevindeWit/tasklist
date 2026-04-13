@@ -7,8 +7,17 @@ Route::view('/', 'welcome')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::view('team', 'team')->name('team');
-    Route::view('projects', 'projects')->name('projects');
-    Route::view('tasks', 'tasks')->name('tasks');
+
+    // Routes requiring team membership
+    Route::group(['middleware' => [function ($request, $next) {
+        if (!auth()->user()->team_id) {
+            abort(403, 'Access denied. You must be a member of a team to access this resource.');
+        }
+        return $next($request);
+    }]], function () {
+        Route::view('projects', 'projects')->name('projects');
+        Route::view('tasks', 'tasks')->name('tasks');
+    });
 
     Route::view('team/join', 'team.join')->name('team.join');
     Route::view('team/create', 'team.create')->name('team.create');

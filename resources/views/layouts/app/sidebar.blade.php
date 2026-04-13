@@ -23,12 +23,13 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item icon="folder-open" :href="route('projects')"
-                    :current="request()->routeIs('projects')" wire:navigate>
+                    :current="request()->routeIs('projects')" wire:navigate
+                    :disabled="!auth()->user()->team_id">
                     {{ __('Projects') }}
                 </flux:sidebar.item>
 
                 <flux:sidebar.item icon="calendar-days" :href="route('tasks')" :current="request()->routeIs('tasks')"
-                    wire:navigate>
+                    wire:navigate :disabled="!auth()->user()->team_id">
                     {{ __('Tasks') }}
                 </flux:sidebar.item>
 
