@@ -22,16 +22,25 @@
                     {{ __('Team') }}
                 </flux:sidebar.item>
 
-                <flux:sidebar.item icon="folder-open" :href="route('projects')"
-                    :current="request()->routeIs('projects')" wire:navigate
-                    :disabled="!auth()->user()->team_id">
-                    {{ __('Projects') }}
-                </flux:sidebar.item>
+                @if(auth()->user()->team_id)
+                    <flux:sidebar.item icon="folder-open" :href="route('projects')"
+                        :current="request()->routeIs('projects')" wire:navigate>
+                        {{ __('Projects') }}
+                    </flux:sidebar.item>
 
-                <flux:sidebar.item icon="calendar-days" :href="route('tasks')" :current="request()->routeIs('tasks')"
-                    wire:navigate :disabled="!auth()->user()->team_id">
-                    {{ __('Tasks') }}
-                </flux:sidebar.item>
+                    <flux:sidebar.item icon="calendar-days" :href="route('tasks')" :current="request()->routeIs('tasks')"
+                        wire:navigate>
+                        {{ __('Tasks') }}
+                    </flux:sidebar.item>
+                @else
+                    <flux:sidebar.item icon="folder-open" disabled class="opacity-50 cursor-not-allowed hover:bg-transparent">
+                        {{ __('Projects') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="calendar-days" disabled class="opacity-50 cursor-not-allowed hover:bg-transparent">
+                        {{ __('Tasks') }}
+                    </flux:sidebar.item>
+                @endif
 
             </flux:sidebar.group>
         </flux:sidebar.nav>
