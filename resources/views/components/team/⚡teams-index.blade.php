@@ -6,7 +6,7 @@ use Flux\Flux;
 new class extends Component {
     public function mount()
     {
-        if (empty(auth()->user()->acknowledge)) {
+        if (!empty(auth()->user()->acknowledge)) {
             Flux::modal('kicked')->show();
         }
     }
