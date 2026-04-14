@@ -12,6 +12,15 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('settings/appearance', 'pages::settings.appearance')->name('appearance.edit');
 
+    Route::group(['middleware' => [function ($request, $next) {
+        if (!auth()->user()->team_id) {
+            abort(403, 'Access denied. You must be a member of a team to access this resource.');
+        }
+        return $next($request);
+    }]], function () {
+        Route::livewire('settings/team', 'pages::settings.team')->name('team.edit');
+    });
+
     Route::livewire('settings/security', 'pages::settings.security')
         ->middleware(
             when(

@@ -24,7 +24,7 @@ new class extends Component {
     @if (!auth()->user()?->team_id)
         <x-team.no-team-found />
     @else
-        <x-team.leave-team-button />
+
     @endif
 
     @teleport('body')
