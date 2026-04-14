@@ -62,7 +62,7 @@ new class extends Component {
 
     public function joinTeam($teamId)
     {
-        auth()->user()->update(['team_id' => $teamId]);
+        auth()->user()->update(['team_id' => $teamId, 'role' => 'member']);
 
         $team = auth()->user()->team;
 

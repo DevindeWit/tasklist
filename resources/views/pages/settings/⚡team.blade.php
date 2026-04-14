@@ -12,7 +12,7 @@ new #[Title('Team settings')] class extends Component {
 
     <flux:heading class="sr-only">{{ __('Team settings') }}</flux:heading>
 
-    <x-pages::settings.layout :heading="__('Team')" :subheading="__('Update the team settings')">
+    <x-pages::settings.layout :heading="__('Team')" :subheading="__('Update your team settings')">
 
     </x-pages::settings.layout>
 
