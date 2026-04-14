@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->enum('role', ['admin', 'manager', 'member'])->default('member');
 
             // Popup message for user if their relation with the team has changed (deleted, kicked, role change, etc)
-            $table->enum('acknowledge', [null, 'kicked', 'deleted', 'role_member', 'role_manager'])->default(null);
+            $table->enum('acknowledge', ['kicked', 'deleted', 'role_member', 'role_manager'])->nullable()->default(null);
 
             $table->foreignId('team_id')->nullable()->constrained()->cascadeOnDelete();
             $table->softDeletes();
