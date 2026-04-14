@@ -28,7 +28,7 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
             'role' => 'member',
-            'acknowledge' => '',
+            'acknowledge' => null,
             'team_id' => null,
         ];
     }
