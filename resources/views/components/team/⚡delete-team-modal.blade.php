@@ -9,8 +9,10 @@ new class extends Component {
     {
         $team = auth()->user()->team;
 
-        // Update all users in this team to have no team
-        $team->allUsers()->update(['team_id' => null]);
+        Flux::toast(variant: 'success', heading: 'Team Deleted', text: $team->name . ' has been deleted successfully.');
+
+        // Update all users in this team to have no team (except the owner)
+        $team->allUsers()->where('id', '!=', $team->owner_id)->update(['team_id' => null, 'acknowledge' => 'deleted']);
 
         // Change name of team to indicate it's deleted (and to free up the original name for future teams)
         $team->update([
@@ -19,8 +21,6 @@ new class extends Component {
 
         // Delete the team
         $team->delete();
-
-        Flux::toast(variant: 'success', heading: 'Team Deleted', text: $team->name . ' has been permanently deleted.');
 
         $this->redirect(route('team'), navigate: true);
     }
@@ -41,6 +41,8 @@ new class extends Component {
             to confirm the deletion.
         </flux:text>
     </div>
+
+    <flux:text>A total of<u> {{ auth()->user()->team->allUsers()->count() }} </u>user(s) will be affected.</flux:text>
 
     <flux:input label="Confirm" x-model="confirmText"></flux:input>
 
