@@ -91,6 +91,14 @@ After running the seeder on the database, you can log in with the admin super us
 Email: `admin@test.com`
 Password: `password`
 
+Other accounts include:
+
+Email: `member@test.com`
+Password: `password`
+
+Email: `manager@test.com`
+Password: `password`
+
 ---
 
 ## Project Structure Overview

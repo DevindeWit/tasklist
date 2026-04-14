@@ -12,7 +12,10 @@ new class extends Component {
         Flux::toast(variant: 'success', heading: 'Team Deleted', text: $team->name . ' has been deleted successfully.');
 
         // Update all users in this team to have no team (except the owner)
-        $team->allUsers()->where('id', '!=', $team->owner_id)->update(['team_id' => null, 'acknowledge' => 'deleted']);
+        $team
+            ->allUsers()
+            ->where('id', '!=', $team->owner_id)
+            ->update(['team_id' => null, 'acknowledge' => 'deleted']);
 
         // Change name of team to indicate it's deleted (and to free up the original name for future teams)
         $team->update([
@@ -47,7 +50,10 @@ new class extends Component {
     <flux:input label="Confirm" x-model="confirmText"></flux:input>
 
     <div class="flex gap-3 mt-6 justify-between">
-        <flux:button variant="outline" @click="$dispatch('close')">Cancel</flux:button>
+        <flux:modal.close>
+            <flux:button variant="ghost">Cancel</flux:button>
+        </flux:modal.close>
+
         <flux:button variant="danger" wire:click="deleteTeam"
             x-bind:disabled="confirmText !== 'sudo delete ' + teamName">Delete Team</flux:button>
     </div>

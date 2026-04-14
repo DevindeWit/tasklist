@@ -19,21 +19,15 @@ new class extends Component {
                 'owner_id' => auth()->id(),
             ]);
 
-            auth()->user()->update(['team_id' => $team->id]);
+            auth()
+                ->user()
+                ->update(['team_id' => $team->id]);
 
-            Flux::toast(
-                variant: 'success',
-                heading: 'Created Team',
-                text: 'Welcome to ' . $team->name . '!'
-            );
+            Flux::toast(variant: 'success', heading: 'Created Team', text: 'Welcome to ' . $team->name . '!');
 
             $this->redirect(route('team'), navigate: true);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            Flux::toast(
-                variant: 'danger',
-                heading: 'Validation Error',
-                text: $e->validator->errors()->first('team_name')
-            );
+            Flux::toast(variant: 'danger', heading: 'Validation Error', text: $e->validator->errors()->first('team_name'));
         }
     }
 };
@@ -45,9 +39,16 @@ new class extends Component {
         <flux:text class="mt-2">Enter a name for your new team</flux:text>
     </div>
 
-    <flux:input label="Name" placeholder="Team name" wire:model.live="team_name" />
+    <flux:field>
+        <flux:label badge="required">Team Name</flux:label>
+        <flux:input placeholder="Picobello B.V." wire:model.live="team_name" />
+    </flux:field>
+
 
     <div class="flex justify-between items-center gap-4">
+        <flux:modal.close>
+            <flux:button variant="ghost">Cancel</flux:button>
+        </flux:modal.close>
         <flux:button variant="primary" wire:click="createTeam">Create</flux:button>
     </div>
 </div>

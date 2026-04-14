@@ -12,11 +12,7 @@ new class extends Component {
             ->user()
             ->update(['team_id' => null]);
 
-        Flux::toast(
-            variant: 'success',
-            heading: 'Left Team',
-            text: "You have left " . $team->name . "."
-        );
+        Flux::toast(variant: 'success', heading: 'Left Team', text: 'You have left ' . $team->name . '.');
 
         $this->redirect(route('team'), navigate: true);
     }
@@ -30,7 +26,10 @@ new class extends Component {
     </div>
 
     <div class="flex gap-3 mt-6 justify-between">
-        <flux:button variant="outline" @click="$dispatch('close')">Cancel</flux:button>
+        <flux:modal.close>
+            <flux:button variant="ghost">Cancel</flux:button>
+        </flux:modal.close>
+
         <flux:button variant="danger" wire:click="leaveTeam">Leave Team</flux:button>
     </div>
 </div>

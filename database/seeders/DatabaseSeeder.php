@@ -14,6 +14,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Global Admin
+        User::factory()->admin()->create([
+            'name' => 'Admin',
+            'email' => 'admin@test.com',
+        ]);
+
         // 1. Create 6-10 Global Tags
         $tags = Tag::factory(rand(6, 10))->create();
 
@@ -64,16 +70,24 @@ class DatabaseSeeder extends Seeder
             }
         });
 
-        // 4. Global Admin
-        User::factory()->admin()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@test.com'
+        // Test team with test users with login information in README.md
+        $testTeam = Team::factory()->create(['name' => 'Test Team']);
+
+        $manager = User::factory()->manager()->create([
+            'name' => 'Test Manager',
+            'email' => 'manager@test.com',
+            'role' => 'manager',
+            'team_id' => $testTeam->id,
         ]);
 
-        // 5. Lesser user for testing
+        $testTeam->update([
+            'owner_id' => $manager->id,
+        ]);
+
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@test.com'
+            'name' => 'Test Member',
+            'email' => 'member@test.com',
+            'team_id' => $testTeam->id,
         ]);
     }
 }
