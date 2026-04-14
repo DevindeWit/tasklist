@@ -127,7 +127,7 @@ php artisan serve
 ```
 
 Open in browser:
-http://127.0.0.1:8000
+[http://tasklist.test](http://tasklist.test)
 
 ---
 
