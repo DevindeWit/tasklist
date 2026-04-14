@@ -2,19 +2,18 @@
 
 use Livewire\Component;
 use App\Models\Team;
-use Illuminate\Database\UniqueConstraintViolationException;
+use Flux\Flux;
 
 new class extends Component {
     public string $team_name = '';
-    public string $error = '';
 
     public function createTeam()
     {
-        $this->validate([
-            'team_name' => 'required|string|max:255',
-        ]);
-
         try {
+            $this->validate([
+                'team_name' => 'required|string|max:255|unique:teams,name',
+            ]);
+
             $team = Team::create([
                 'name' => $this->team_name,
                 'owner_id' => auth()->id(),
@@ -22,10 +21,19 @@ new class extends Component {
 
             auth()->user()->update(['team_id' => $team->id]);
 
-            $this->dispatch('close');
-            $this->dispatch('teamUpdated');
-        } catch (UniqueConstraintViolationException $e) {
-            $this->error = 'A team with this name already exists. Please choose a different name.';
+            Flux::toast(
+                variant: 'success',
+                heading: 'Created Team',
+                text: 'Welcome to ' . $team->name . '!'
+            );
+
+            $this->redirect(route('team'), navigate: true);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Flux::toast(
+                variant: 'danger',
+                heading: 'Validation Error',
+                text: $e->validator->errors()->first('team_name')
+            );
         }
     }
 };
@@ -40,8 +48,6 @@ new class extends Component {
     <flux:input label="Name" placeholder="Team name" wire:model.live="team_name" />
 
     <div class="flex justify-between items-center gap-4">
-        <flux:text>{{ $error }}</flux:text>
         <flux:button variant="primary" wire:click="createTeam">Create</flux:button>
     </div>
 </div>
-

@@ -4,6 +4,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Team;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Flux\Flux;
 
 new class extends Component {
     use WithPagination;
@@ -62,7 +63,16 @@ new class extends Component {
     public function joinTeam($teamId)
     {
         auth()->user()->update(['team_id' => $teamId]);
-        $this->redirect(route('team'));
+
+        $team = auth()->user()->team;
+
+        Flux::toast(
+            variant: 'success',
+            heading: 'Joined Team',
+            text: "Welcome to " . $team->name . "!"
+        );
+
+        $this->redirect(route('team'), navigate: true);
     }
 };
 ?>
