@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'two_factor_confirmed_at' => null,
             'role' => 'member',
             'acknowledge' => null,
-            'last_activity_at' => null,
+            'last_activity_at' => fake()->optional(0.8)->dateTimeBetween('-1 month', '+2 months'),
             'team_id' => null,
         ];
     }
