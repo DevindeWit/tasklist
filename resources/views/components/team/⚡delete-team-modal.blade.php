@@ -13,7 +13,7 @@ new class extends Component {
 
         // Update all users in this team to have no team (except the owner)
         $team
-            ->allUsers()
+            ->users()
             ->where('id', '!=', $team->owner_id)
             ->update(['team_id' => null, 'acknowledge' => 'deleted']);
 
@@ -45,7 +45,7 @@ new class extends Component {
         </flux:text>
     </div>
 
-    <flux:text>A total of<u> {{ auth()->user()->team->allUsers()->count() }} </u>user(s) will be affected.</flux:text>
+    <flux:text>A total of<u> {{ auth()->user()->team->users()->count() }} </u>user(s) will be affected.</flux:text>
 
     <flux:input label="Confirm" x-model="confirmText"></flux:input>
 

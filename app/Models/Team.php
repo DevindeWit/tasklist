@@ -25,7 +25,7 @@ class Team extends Model
         return $this->hasMany(Project::class);
     }
 
-    public function allUsers(): HasMany
+    public function users(): HasMany
     {
         return $this->hasMany(User::class, 'team_id', 'id');
     }

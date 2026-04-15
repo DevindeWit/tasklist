@@ -14,7 +14,7 @@ new class extends Component {
     #[\Livewire\Attributes\Computed]
     public function teams()
     {
-        $teams = Team::with('allUsers')->orderBy('name')->get();
+        $teams = Team::with('users')->orderBy('name')->get();
 
         if (empty($this->team_name)) {
             $filtered = $teams;
@@ -100,9 +100,9 @@ new class extends Component {
                         <flux:table.cell>{{ $team->name }}</flux:table.cell>
                         <flux:table.cell>
                             <div class="flex flex-wrap gap-2">
-                                @if (count($team->allUsers) > 0)
+                                @if (count($team->users) > 0)
                                     @php
-                                        $memberCount = count($team->allUsers);
+                                        $memberCount = count($team->users);
                                         if ($memberCount <= 3) {
                                             $color = 'blue';
                                         } elseif ($memberCount <= 6) {
