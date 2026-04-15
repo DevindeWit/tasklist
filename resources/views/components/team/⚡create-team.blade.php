@@ -7,7 +7,7 @@ use Flux\Flux;
 new class extends Component {
     public string $team_name = '';
 
-    public function createTeam()
+    public function create_team()
     {
         try {
             $this->validate([
@@ -49,6 +49,6 @@ new class extends Component {
         <flux:modal.close>
             <flux:button variant="ghost">Cancel</flux:button>
         </flux:modal.close>
-        <flux:button variant="primary" wire:click="createTeam">Create</flux:button>
+        <flux:button variant="primary" wire:click="create_team">Create</flux:button>
     </div>
 </div>

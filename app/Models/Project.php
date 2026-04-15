@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['name', 'code', 'description', 'status'])]
+#[Fillable(['name', 'code', 'description', 'status', 'team_id'])]
 class Project extends Model
 {
     use SoftDeletes, HasFactory;

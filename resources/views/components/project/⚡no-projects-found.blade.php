@@ -12,6 +12,11 @@ new class extends Component {
 
         Flux::toast(heading: 'Email copied', variant: 'success', text: auth()->user()->team->owner->name . "'s email has been copied to your clipboard!");
     }
+
+    public function go_back()
+    {
+        $this->redirect(route('team'));
+    }
 };
 ?>
 
@@ -34,8 +39,24 @@ new class extends Component {
                         wire:click='copy_manager' />
                 </flux:tooltip>
 
-                <flux:button variant="ghost" onclick="window.location.href='{{ url()->previous() }}'">
+                <flux:button variant="ghost" wire:click='go_back'>
                     Back
+                </flux:button>
+            </div>
+        @else
+            <flux:callout.heading icon="folder-plus">Create new project!</flux:callout.heading>
+            <flux:callout.text>Projects are a great way for your entire team to manage multiple groups of tasks! Without
+                a project, there can't be any tasks for your team to work on.</flux:callout.text>
+
+            <div class="flex justify-between">
+                <flux:modal.trigger name="create_project">
+                    <flux:button variant="primary">
+                        Create new project
+                    </flux:button>
+                </flux:modal.trigger>
+
+                <flux:button variant="ghost" wire:click='go_back'>
+                    Nevermind
                 </flux:button>
             </div>
         @endif
@@ -44,6 +65,12 @@ new class extends Component {
     <div class="relative flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
         <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
     </div>
+
+    @teleport('body')
+        <flux:modal name="create_project">
+            <livewire:project.create-project />
+        </flux:modal>
+    @endteleport
 
     <script>
         window.addEventListener('copy-to-clipboard', event => {
