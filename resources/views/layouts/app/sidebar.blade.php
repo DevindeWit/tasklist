@@ -49,6 +49,27 @@
 
         <flux:spacer />
 
+        @if (auth()->user()->team_id !== null)
+            @php
+                $role = auth()->user()->role;
+
+                $roleClasses = match ($role) {
+                    'member' => 'bg-blue-500/20 border-blue-200/30 text-blue-200',
+                    'manager' => 'bg-green-500/20 border-green-200/30 text-green-200',
+                    'admin' => 'bg-red-500/20 border-red-200/30 text-red-200',
+                    default => 'bg-gray-500/20 border-gray-200/30 text-gray-200',
+                };
+            @endphp
+
+            <flux:sidebar.item icon="shield-check" disabled class="pointer-events-none">
+                Role:
+                <cell class="px-1 mx-1 border-solid border rounded {{ $roleClasses }}">
+                    {{ ucfirst($role) }}
+                </cell>
+            </flux:sidebar.item>
+        @endif
+
+
         <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
     </flux:sidebar>
 

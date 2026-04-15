@@ -14,7 +14,7 @@ new class extends Component {
             <flux:heading size="lg">{{ $project->name }}</flux:heading>
 
             @if (auth()->user()->role !== 'member')
-                <flux:modal.trigger :name="'project-settings-'.$project->id">
+                <flux:modal.trigger :name="'project-settings-'.$project->id" @click.stop>
                     <flux:button variant="ghost" size="sm" icon="cog-6-tooth" icon:variant="outline"
                         inset="top right bottom" class="cursor-pointer" />
                 </flux:modal.trigger>
@@ -40,7 +40,7 @@ new class extends Component {
 
     </div>
 
-    <div>
+    <div class="m-0 flex gap-4 *:opacity-70 *:hover:opacity-100 *:transition *:cursor-text">
         <flux:badge class="text-xs">
             {{ $project->code }}
         </flux:badge>
