@@ -20,8 +20,7 @@ new class extends Component {
 };
 ?>
 
-<div class="flex flex-col gap-4 h-full text-center
-            md:text-left">
+<div class="flex flex-col gap-4 min-h-[calc(100vh-var(--spacing)*16)] text-center md:text-left">
     <div>
         <flux:heading size="xl">Hmm...</flux:heading>
         <flux:subheading>Seems a bit empty here!</flux:subheading>
@@ -35,11 +34,11 @@ new class extends Component {
 
             <div class="flex justify-between">
                 <flux:tooltip content="{{ auth()->user()->team->owner->email }}" position="bottom">
-                    <flux:profile :name="auth()->user()->team->owner->name" class="w-fit" icon:trailing=""
+                    <flux:profile :name="auth()->user()->team->owner->name" class="w-fit cursor-pointer" icon:trailing=""
                         wire:click='copy_manager' />
                 </flux:tooltip>
 
-                <flux:button variant="ghost" wire:click='go_back'>
+                <flux:button variant="ghost" wire:click='go_back' class="cursor-pointer">
                     Back
                 </flux:button>
             </div>
@@ -62,7 +61,8 @@ new class extends Component {
         @endif
     </flux:callout>
 
-    <div class="relative flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+    <div
+        class="relative flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
         <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
     </div>
 

@@ -13,7 +13,7 @@ new class extends Component {
 <div class="min-h-full flex flex-col gap-4">
     @if (auth()->user()->team->projects->isEmpty())
         <div class="h-full">
-            <livewire:project.no-projects-found />
+            <livewire:project.no-projects-found class="h-full"/>
         </div>
     @else
         <flux:heading size="xl">Projects:</flux:heading>

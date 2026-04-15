@@ -14,6 +14,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 #[Fillable(['name', 'email', 'password', 'team_id', 'acknowledge'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
@@ -29,6 +31,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_activity_at' => 'datetime',
         ];
     }
 
@@ -69,5 +72,35 @@ class User extends Authenticatable
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id', 'id');
+    }
+
+    public function lastActivity()
+    {
+        $teamUserIds = DB::table('users')
+            ->where('team_id', $this->team_id)
+            ->pluck('id');
+
+        $dates = collect([
+            $this->updated_at,
+
+            // Tasks assigned to team members
+            DB::table('tasks')
+                ->whereIn('assignee_id', $teamUserIds)
+                ->max('updated_at'),
+
+            // Comments by team members
+            DB::table('comments')
+                ->whereIn('user_id', $teamUserIds)
+                ->max('updated_at'),
+
+            // Task assignments (pivot)
+            DB::table('task_user')
+                ->whereIn('user_id', $teamUserIds)
+                ->max('updated_at'),
+        ])
+            ->filter()
+            ->max();
+
+        return $dates ? Carbon::parse($dates) : null;
     }
 }

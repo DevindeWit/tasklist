@@ -29,6 +29,7 @@ class UserFactory extends Factory
             'two_factor_confirmed_at' => null,
             'role' => 'member',
             'acknowledge' => null,
+            'last_activity_at' => null,
             'team_id' => null,
         ];
     }
