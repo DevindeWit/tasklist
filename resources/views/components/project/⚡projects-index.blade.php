@@ -2,15 +2,15 @@
 
 use Livewire\Component;
 
-new class extends Component
-{
+new class extends Component {
     //
 };
 ?>
 
-<div>
+<div class="h-full">
     @if (auth()->user()->team->projects->isEmpty())
-        <x-project.no-projects-found />
-
+        <div class="h-full">
+            <livewire:project.no-projects-found />
+        </div>
     @endif
 </div>
