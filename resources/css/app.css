@@ -52,29 +52,160 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
+/* --- Shared Scrollbar Definition (The "Senior" Consistency Fix) --- */
 @layer components {
-    .custom-scrollbar {
-        /* Set the scrollbar width (vertical) and height (horizontal) */
-        &::-webkit-scrollbar {
-            @apply w-1.5 h-1.5;
+
+    /* 1. Global Scrollbar Variables */
+    :root {
+        /* The total footprint area */
+        --sb-size: 10px;
+        /* Thumb colors linked to your zinc theme */
+        --sb-thumb: color-mix(in srgb, var(--color-zinc-200) 50%, transparent);
+        --sb-hover: color-mix(in srgb, var(--color-zinc-200) 80%, transparent);
+    }
+
+    /* 2. Unified Scrollbar System (The Parity Fix) */
+    /* Grouping selectors ensures the browser renders them identically */
+    .custom-scrollbar,
+    .markdown-render pre {
+        scrollbar-width: thin;
+        scrollbar-color: var(--sb-thumb) transparent;
+        scrollbar-gutter: stable;
+    }
+
+    /* Set the size and hide browser-default arrows */
+    .custom-scrollbar::-webkit-scrollbar,
+    .markdown-render pre::-webkit-scrollbar {
+        width: var(--sb-size) !important;
+        height: var(--sb-size) !important;
+        display: block;
+    }
+
+    /* This removes the arrows that were causing the 'thick' look in your images */
+    .custom-scrollbar::-webkit-scrollbar-button,
+    .markdown-render pre::-webkit-scrollbar-button {
+        display: none !important;
+        width: 0;
+        height: 0;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track,
+    .markdown-render pre::-webkit-scrollbar-track {
+        background: transparent !important;
+    }
+
+    /* The 'Floating' Thumb Look */
+    .custom-scrollbar::-webkit-scrollbar-thumb,
+    .markdown-render pre::-webkit-scrollbar-thumb {
+        background-color: var(--sb-thumb) !important;
+        border-radius: 20px !important;
+        /* A 3px transparent border creates a clean gap within the 10px area */
+        border: 3px solid transparent !important;
+        background-clip: content-box !important;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+    .markdown-render pre::-webkit-scrollbar-thumb:hover {
+        background-color: var(--sb-hover) !important;
+    }
+
+    /* 3. Comprehensive Markdown Rendering */
+    .markdown-render {
+        @apply text-zinc-400 leading-relaxed;
+
+        /* Typography Hierarchy */
+        & :is(h1, h2, h3, h4) {
+            @apply text-zinc-100 font-semibold mt-8 mb-4;
         }
 
-        /* The background of the scrollbar track */
-        &::-webkit-scrollbar-track {
-            @apply bg-transparent;
+        & h1 {
+            @apply text-3xl border-b border-zinc-800 pb-2;
         }
 
-        /* The actual draggable thumb */
-        &::-webkit-scrollbar-thumb {
-            @apply bg-zinc-600 rounded border border-solid border-zinc-500;
+        & h2 {
+            @apply text-2xl border-b border-zinc-800/50 pb-1;
         }
 
-        /* Hover effect for better UX */
-        &::-webkit-scrollbar-thumb:hover {
-            @apply bg-zinc-500;
+        & h3 {
+            @apply text-xl;
+        }
+
+        /* Links & Interactions */
+        & a {
+            @apply text-accent font-medium underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent/80 hover:decoration-accent;
+        }
+
+        /* Lists & Nesting */
+        & :is(ul, ol) {
+            @apply my-5 ml-6 space-y-2;
+        }
+
+        & ul {
+            @apply list-disc;
+        }
+
+        & ol {
+            @apply list-decimal;
+        }
+
+        & li>ul {
+            @apply mt-2;
+        }
+
+        /* Blockquotes */
+        & blockquote {
+            @apply border-l-4 border-zinc-700 pl-4 italic text-zinc-300 my-6;
+        }
+
+        /* Inline Code */
+        & code {
+            @apply bg-zinc-800 text-zinc-200 px-1.5 py-0.5 rounded text-sm font-mono;
+        }
+
+        /* Multiline Code (Scrollbar logic handled above) */
+        & pre {
+            @apply bg-zinc-900 border border-zinc-800 p-4 rounded-lg my-6 overflow-x-auto;
+        }
+
+        & pre code {
+            @apply bg-transparent p-0;
+        }
+
+        /* GFM Tables */
+        & table {
+            @apply w-full text-left border-collapse my-6 text-sm overflow-hidden rounded-lg;
+        }
+
+        & thead {
+            @apply border-b border-zinc-700 bg-zinc-800/30;
+        }
+
+        & th {
+            @apply p-3 font-semibold text-zinc-100;
+        }
+
+        & td {
+            @apply p-3 border-b border-zinc-800/50;
+        }
+
+        /* Media and Formatting */
+        & hr {
+            @apply border-zinc-800 my-8;
+        }
+
+        & img {
+            @apply rounded-lg border border-zinc-800 my-6 mx-auto;
+        }
+
+        & strong {
+            @apply text-zinc-100 font-bold;
+        }
+
+        & em {
+            @apply text-zinc-300 italic;
         }
     }
 }

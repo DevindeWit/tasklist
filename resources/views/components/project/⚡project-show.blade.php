@@ -12,7 +12,7 @@ new class extends Component {
     public function mount()
     {
         $this->project = Project::find($this->project_id);
-        $this->tasks = $this->project->tasks;
+        $this->tasks = $this->project->tasks()->orderBy('updated_at')->get();
     }
 };
 ?>
