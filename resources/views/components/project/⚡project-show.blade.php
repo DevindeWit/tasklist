@@ -17,7 +17,7 @@ new class extends Component {
 };
 ?>
 
-<div class="flex flex-col gap-8">
+<div class="flex flex-col gap-8 h-[calc(100dvh-4rem)]">
     <div>
         <div class="flex justify-between">
             <flux:heading size="xl">{{ $project->name }}</flux:heading>
@@ -31,6 +31,8 @@ new class extends Component {
 
         <flux:subheading>{!! strlen($project->description) > 0 ? $project->description : '&nbsp;' !!}</flux:subheading>
     </div>
+
+    <livewire:project.project-kanban :tasks="$tasks" wire:key="'project-kanban-'.$project->id" class="flex-1" />
 
     @teleport('body')
         <flux:modal :name="'project-settings-'.$project->id">

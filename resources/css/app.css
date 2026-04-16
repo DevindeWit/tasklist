@@ -55,6 +55,30 @@
     @apply  !mb-0 !leading-tight;
 }
 
+@layer components {
+    .custom-scrollbar {
+        /* Set the scrollbar width (vertical) and height (horizontal) */
+        &::-webkit-scrollbar {
+            @apply w-1.5 h-1.5;
+        }
+
+        /* The background of the scrollbar track */
+        &::-webkit-scrollbar-track {
+            @apply bg-transparent;
+        }
+
+        /* The actual draggable thumb */
+        &::-webkit-scrollbar-thumb {
+            @apply bg-zinc-600 rounded border border-solid border-zinc-500;
+        }
+
+        /* Hover effect for better UX */
+        &::-webkit-scrollbar-thumb:hover {
+            @apply bg-zinc-500;
+        }
+    }
+}
+
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {

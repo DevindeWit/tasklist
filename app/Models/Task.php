@@ -9,12 +9,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 #[Fillable(['title', 'descriptions', 'status', 'priority', 'due_date', 'estimate_minutes'])]
 
 class Task extends Model
 {
     use SoftDeletes, HasFactory;
+
+    /**
+     * Automatically convert markdown to HTML via property hook.
+     */
+    public string $description_md {
+        get => Str::markdown($this->description ?? '');
+    }
 
     public function project(): BelongsTo
     {
