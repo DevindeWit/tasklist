@@ -4,10 +4,11 @@ use Livewire\Component;
 
 new class extends Component
 {
-    //
+    // Retrieved from parent
+    public $project_id;
 };
 ?>
 
 <div>
-    {{-- An unexamined life is not worth living. - Socrates --}}
+    {{ $project_id }}
 </div>
