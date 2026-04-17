@@ -83,7 +83,7 @@ new class extends Component {
         <flux:text class="mt-2">Search for existing teams to join</flux:text>
     </div>
 
-    <flux:input icon="magnifying-glass" placeholder="Team name" wire:model.live="team_name" />
+    <flux:input icon="magnifying-glass" placeholder="Team name" wire:model.live="team_name" autocomplete="off" />
 
     @if ($this->teams->count() > 0)
         <flux:table :paginate="$this->teams">

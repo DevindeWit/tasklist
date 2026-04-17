@@ -2,9 +2,12 @@
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use App\Models\Project;
 
 new class extends Component {
     // retrieved from parent
+    public $project;
+
     public $tasks;
 
     public array $statuses = [
@@ -41,33 +44,38 @@ new class extends Component {
             $this->dispatch('scroll-to-bottom', column: $target, board: $board);
         }
     }
+
+    #[On('refresh-kanban')]
+    public function refresh_kanban()
+    {
+        $this->project = Project::findOrFail($this->project->id);
+        $this->tasks = $this->project->tasks;
+    }
+
+    public function mount()
+    {
+        $this->tasks = $this->project->tasks;
+    }
 };
 ?>
 
 <div x-data
     @scroll-to-bottom.window="
-        // Defer layout calculations until Livewire finishes morphing and the browser paints
-        setTimeout(() => {
-            requestAnimationFrame(() => {
-                let col = document.getElementById('column-' + $event.detail.column);
-                let card = document.getElementById('kanban-' + $event.detail.column + '-' + $event.detail.board);
+        $nextTick(() => {
+            const card = document.getElementById(`kanban-${$event.detail.column}-${$event.detail.board}`);
 
-                if (col) {
-                    col.scrollTo({
-                        top: col.scrollHeight,
-                        behavior: 'smooth'
-                    });
-                }
-
-                if (card) {
-                    let container = card.parentElement;
-                    container.scrollTo({
-                        left: card.offsetLeft - (container.clientWidth / 2) + (card.clientWidth / 2),
-                        behavior: 'smooth'
-                    });
-                }
+            /**
+             * scrollIntoView handles the alignment for all scrollable parents automatically.
+             * behavior: smooth provides the animated transition.
+             * block: end ensures the column scrolls to the bottom where the card resides.
+             * inline: center performs the horizontal centering math previously done manually.
+             */
+            card?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'end',
+                inline: 'center'
             });
-        }, 50)
+        })
     "
     class="flex flex-nowrap gap-4 overflow-x-auto overflow-y-hidden pb-4 px-4 *:w-md *:shrink-0 w-[calc(100%+4rem)] -translate-x-8 translate-y-8 -mt-8 custom-scrollbar scroll-smooth">
     @foreach ($this->statuses as $type => $status)
@@ -88,29 +96,33 @@ new class extends Component {
                 @endif
             </div>
 
-            <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-40 scroll-smooth"
-                id="column-{{ $type }}">
+            {{-- Column --}}
+            <div id="column-{{ $type }}"
+                class="group flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-40 scroll-smooth">
+
+                {{-- Task --}}
                 @foreach ($tasks->where('status', $type) as $task)
                     <livewire:project.project-kanban-task :task="$task" wire:key="task-{{ $task->id }}" />
                 @endforeach
 
+                {{-- Create new task button --}}
                 @if (auth()->user()->role !== 'member')
                     @if ($statuses[$type]['creating_new'])
-                        <livewire:task.create-task />
+                        <livewire:task.create-task :status="$type" />
                     @else
                         <flux:card
                             wire:click="create_task('{{ $type }}', '{{ $tasks->first()->project->id ?? '1' }}')"
-                            wire:target="create_task('{{ $type }}', '{{ $tasks->first()->project->id ?? '1' }}')"
-                            class="flex flex-col items-center justify-center border-dashed border-2 text-zinc-50 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer opacity-70 hover:opacity-100 transition min-h-[100px]">
-                            {{-- Container to maintain size while swapping icons --}}
+                            {{--
+                                The button uses opacity-0 to remain hidden until the parent group is hovered.
+                                Pointer events are disabled when hidden to prevent phantom clicks.
+                                The group-hover utility restores visibility and interactivity.
+                            --}}
+                            class="opacity-0 group-hover:opacity-70 pointer-events-none group-hover:pointer-events-auto flex flex-col items-center justify-center border-dashed border-2 text-zinc-50 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer hover:opacity-100 transition min-h-25">
                             <div class="relative flex flex-col items-center justify-center">
-
-                                {{-- Show plus by default, hide when this specific action is loading --}}
                                 <flux:icon.plus wire:loading.remove
                                     wire:target="create_task('{{ $type }}', '{{ $tasks->first()->project->id ?? '1' }}')"
                                     class="size-5" />
 
-                                {{-- Show loading ONLY when this specific column's action is loading --}}
                                 <flux:icon.loading wire:loading
                                     wire:target="create_task('{{ $type }}', '{{ $tasks->first()->project->id ?? '1' }}')"
                                     class="size-5 animate-spin" />
@@ -123,4 +135,10 @@ new class extends Component {
             </div>
         </flux:card>
     @endforeach
+
+    @teleport('body')
+        <flux:modal name="task-settings-new">
+            <livewire:task.task-settings :task="$tasks->sortByDesc('id')->first()" />
+        </flux:modal>
+    @endteleport
 </div>

@@ -60,31 +60,24 @@
 
     /* 1. Global Scrollbar Variables */
     :root {
-        /* The total footprint area */
-        --sb-size: 10px;
         /* Thumb colors linked to your zinc theme */
         --sb-thumb: color-mix(in srgb, var(--color-zinc-200) 50%, transparent);
         --sb-hover: color-mix(in srgb, var(--color-zinc-200) 80%, transparent);
     }
 
     /* 2. Unified Scrollbar System (The Parity Fix) */
-    /* Grouping selectors ensures the browser renders them identically */
     .custom-scrollbar,
     .markdown-render pre {
-        scrollbar-width: thin;
         scrollbar-color: var(--sb-thumb) transparent;
-        scrollbar-gutter: stable;
     }
 
-    /* Set the size and hide browser-default arrows */
+    /* Set the color and hide browser-default arrows */
     .custom-scrollbar::-webkit-scrollbar,
     .markdown-render pre::-webkit-scrollbar {
-        width: var(--sb-size) !important;
-        height: var(--sb-size) !important;
         display: block;
     }
 
-    /* This removes the arrows that were causing the 'thick' look in your images */
+    /* This removes the arrows that were causing the 'thick' look */
     .custom-scrollbar::-webkit-scrollbar-button,
     .markdown-render pre::-webkit-scrollbar-button {
         display: none !important;
@@ -102,7 +95,7 @@
     .markdown-render pre::-webkit-scrollbar-thumb {
         background-color: var(--sb-thumb) !important;
         border-radius: 20px !important;
-        /* A 3px transparent border creates a clean gap within the 10px area */
+        /* Padding is maintained via transparent border without fixed width */
         border: 3px solid transparent !important;
         background-clip: content-box !important;
     }
@@ -165,7 +158,7 @@
             @apply bg-zinc-800 text-zinc-200 px-1.5 py-0.5 rounded text-sm font-mono;
         }
 
-        /* Multiline Code (Scrollbar logic handled above) */
+        /* Multiline Code */
         & pre {
             @apply bg-zinc-900 border border-zinc-800 p-4 rounded-lg my-6 overflow-x-auto;
         }

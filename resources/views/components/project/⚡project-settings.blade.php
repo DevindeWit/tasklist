@@ -45,7 +45,7 @@ new class extends Component {
     {{-- Project name --}}
     <flux:field>
         <flux:label>Project Name</flux:label>
-        <flux:input placeholder="My cool website" wire:model.live="project_array.name" />
+        <flux:input placeholder="My cool website" wire:model.live="project_array.name" autocomplete="off" />
     </flux:field>
 
     {{-- Project description --}}

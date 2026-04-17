@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-#[Fillable(['title', 'descriptions', 'status', 'priority', 'due_date', 'estimate_minutes'])]
+#[Fillable(['title', 'description', 'status', 'priority', 'due_date', 'estimate_minutes', 'project_id', 'assignee_id'])]
 
 class Task extends Model
 {

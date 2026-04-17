@@ -19,12 +19,12 @@ new class extends Component {
 
 <div class="flex flex-col gap-8 h-[calc(100dvh-4rem)]">
     <div>
-        <div class="flex justify-between">
+        <div class="flex gap-2 items-center">
             <flux:heading size="xl">{{ $project->name }}</flux:heading>
 
             @if (auth()->user()->role !== 'member')
                 <flux:modal.trigger :name="'project-settings-'.$project->id">
-                    <flux:button icon="cog-6-tooth"></flux:button>
+                    <flux:button icon="cog-6-tooth" icon:variant="outline" variant="ghost"></flux:button>
                 </flux:modal.trigger>
             @endif
         </div>
@@ -32,7 +32,7 @@ new class extends Component {
         <flux:subheading>{!! strlen($project->description) > 0 ? $project->description : '&nbsp;' !!}</flux:subheading>
     </div>
 
-    <livewire:project.project-kanban :tasks="$tasks" wire:key="'project-kanban-'.$project->id" class="flex-1" />
+    <livewire:project.project-kanban :project="$project" wire:key="'project-kanban-'.$project->id" class="flex-1" />
 
     @teleport('body')
         <flux:modal :name="'project-settings-'.$project->id">

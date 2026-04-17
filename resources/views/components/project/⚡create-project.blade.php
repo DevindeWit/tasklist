@@ -46,8 +46,8 @@ new class extends Component {
     </div>
 
     <flux:field>
-        <flux:label badge="required">Project Name</flux:label>
-        <flux:input placeholder="My cool website" wire:model.live="project_name" />
+        <flux:label badge="Required">Project Name</flux:label>
+        <flux:input placeholder="My cool website" wire:model.live="project_name" autocomplete="off" />
     </flux:field>
 
     <flux:field>

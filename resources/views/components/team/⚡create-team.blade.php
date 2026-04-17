@@ -40,8 +40,8 @@ new class extends Component {
     </div>
 
     <flux:field>
-        <flux:label badge="required">Team Name</flux:label>
-        <flux:input placeholder="Picobello B.V." wire:model.live="team_name" />
+        <flux:label badge="Required">Team Name</flux:label>
+        <flux:input placeholder="Picobello B.V." wire:model.live="team_name" autocomplete="off" />
     </flux:field>
 
 

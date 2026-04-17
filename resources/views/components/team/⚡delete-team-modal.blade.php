@@ -15,7 +15,11 @@ new class extends Component {
         $team
             ->users()
             ->where('id', '!=', $team->owner_id)
-            ->update(['team_id' => null, 'acknowledge' => 'deleted']);
+            ->update(['acknowledge' => 'deleted']);
+
+        $team
+            ->users()
+            ->update(['team_id' => null, 'role' => 'member']);
 
         // Change name of team to indicate it's deleted (and to free up the original name for future teams)
         $team->update([
@@ -47,7 +51,7 @@ new class extends Component {
 
     <flux:text>A total of<u> {{ auth()->user()->team->users()->count() }} </u>user(s) will be affected.</flux:text>
 
-    <flux:input label="Confirm" x-model="confirmText"></flux:input>
+    <flux:input label="Confirm" x-model="confirmText" autocomplete="off"></flux:input>
 
     <div class="flex gap-3 mt-6 justify-between">
         <flux:modal.close>
