@@ -17,10 +17,7 @@ new class extends Component {
                 'project_description' => 'nullable|string|max:1000',
             ]);
 
-            // Keep generating until unique
-            do {
-                $this->project_code = strtoupper(fake()->bothify('???-###'));
-            } while (Project::where('code', $this->project_code)->exists());
+            $this->project_code = auth()->user()->team_id . '-' . strtoupper(fake()->bothify('???-###'));
 
             $project = Project::create([
                 'name' => $this->project_name,

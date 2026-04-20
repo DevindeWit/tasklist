@@ -1,32 +1,27 @@
 <?php
 
 use Livewire\Component;
-use Livewire\Attributes\Url;
 use App\Models\Project;
+use Livewire\Attributes\Title;
 
-new class extends Component {
-    // Project ID retrieved through URL parameter
-    #[Url]
+new #[Title('Projects')] class extends Component {
     public $project_id;
 
-    public function open_project($projectId)
+    public function open_project($project_code)
     {
-        $this->redirect(route('projects', ['project_id' => $projectId]), navigate: true);
+        $this->redirect(route('tasks.index', ['project_code' => $project_code]), navigate: true);
     }
 
     public function mount()
-{
-    if (!$this->project_id) {
-        return;
+    {
+        if (!$this->project_id) {
+            return;
+        }
+
+        $project = Project::findOrFail($this->project_id); // 404 if not found
+
+        abort_if($project->team_id !== auth()->user()->team_id, 403);
     }
-
-    $project = Project::findOrFail($this->project_id); // 404 if not found
-
-    abort_if(
-        $project->team_id !== auth()->user()->team_id,
-        403
-    );
-}
 };
 ?>
 
@@ -43,8 +38,9 @@ new class extends Component {
 
             <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                 @foreach (auth()->user()->team->projects as $project)
-                    <div wire:click='open_project({{ $project->id }})'>
-                        <livewire:project.project-card :project="$project" wire:key="project-{{ $project->id }}" />
+                    {{-- Wrap in a container or use wire:navigate on a link for better UX --}}
+                    <div wire:click="open_project('{{ $project->code }}')" class="cursor-pointer">
+                        <livewire:project.project-card :project="$project" wire:key="project-{{ $project->code }}" />
                     </div>
                 @endforeach
 

@@ -4,31 +4,25 @@ use Livewire\Component;
 use App\Models\Project;
 use Flux\Flux;
 use Illuminate\Validation\ValidationException;
-use Livewire\Attributes\Url;
 
 new class extends Component {
-    // Retrieved from parent
+    // Props from parent
     public $status;
+    public Project $project;
 
     public $task_title;
 
-    // Project ID retrieved through URL parameter
-    #[Url]
-    public $project_id;
 
     public function create_task()
     {
         try {
-            $project = Project::where('id', $this->project_id)
-                ->where('team_id', auth()->user()->team_id)
-                ->firstOrFail();
-
             $this->validate([
                 'task_title' => 'required|string|min:3|max:255',
-                'project_id' => 'required|integer|exists:projects,id',
             ]);
 
-            $project->tasks()->create([
+            $this->dispatch('create-task');
+
+            $this->project->tasks()->create([
                 'title' => $this->task_title,
                 'status' => $this->status,
             ]);

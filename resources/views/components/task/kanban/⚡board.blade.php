@@ -102,13 +102,13 @@ new class extends Component {
 
                 {{-- Task --}}
                 @foreach ($tasks->where('status', $type) as $task)
-                    <livewire:project.project-kanban-task :task="$task" wire:key="task-{{ $task->id }}" />
+                    <livewire:task.kanban.task :task="$task" wire:key="task-{{ $task->id }}" />
                 @endforeach
 
                 {{-- Create new task button --}}
                 @if (auth()->user()->role !== 'member')
                     @if ($statuses[$type]['creating_new'])
-                        <livewire:task.create-task :status="$type" />
+                        <livewire:task.kanban.create-task :status="$type" :project="$project" />
                     @else
                         <flux:card
                             wire:click="create_task('{{ $type }}', '{{ $tasks->first()->project->id ?? '1' }}')"

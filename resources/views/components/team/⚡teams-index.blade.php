@@ -2,8 +2,9 @@
 
 use Livewire\Component;
 use Flux\Flux;
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new #[Title('Team')] class extends Component {
     public function mount()
     {
         if (!empty(auth()->user()->acknowledge)) {
@@ -19,6 +20,7 @@ new class extends Component {
     }
 };
 ?>
+
 
 <div>
     @if (!auth()->user()?->team_id)

@@ -81,8 +81,8 @@ new class extends Component {
         @endif
     </div>
 
-    <flux:tooltip content="{{ $task->title }}">
-        <flux:heading size="lg" class="line-clamp-1">{{ $task->title }}</flux:heading>
+    <flux:tooltip content="{{ $task->title ?? '' }}">
+        <flux:heading size="lg" class="line-clamp-1">{{ $task->title ?? '' }}</flux:heading>
     </flux:tooltip>
 
     @if (!empty($task->description))

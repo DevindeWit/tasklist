@@ -1,19 +1,17 @@
 <?php
 
 use Livewire\Component;
-use Livewire\Attributes\Url;
 
 new class extends Component {
     // Project data received through parent
     public $project;
 
-    // Keep track of project ID in the url for redirecting after saving changes
-    #[Url]
-    public $project_id;
-
     // Values converted to array for model.live binding in inputs
     public array $project_array = [];
 
+    /**
+     * Update project details and redirect to the task view.
+     */
     public function save_changes()
     {
         $this->validate([
@@ -26,9 +24,20 @@ new class extends Component {
             'description' => $this->project_array['description'],
         ]);
 
-        $this->redirect(route('projects', ['project_id' => $this->project_id]), navigate: true);
+        /**
+         * The route helper must use 'project_code' to match:
+         * Route::livewire('/tasks/{project_code?}', ...)
+         */
+        if (request()->route('project_code')) {
+            $this->redirect(route('tasks.index', ['project_code' => $this->project->code]), navigate: true);
+        } else {
+            $this->redirect(route('projects'), navigate: true);
+        }
     }
 
+    /**
+     * Initialize the form array from the project instance.
+     */
     public function mount()
     {
         $this->project_array = $this->project->toArray();

@@ -18,8 +18,25 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
+            /**
+             * Establish the relationship.
+             * This will either use an existing factory or a passed ID.
+             */
+            'team_id' => \App\Models\Team::factory(),
+
             'name' => fake()->words(fake()->randomElement([2, 3]), true),
-            'code' => strtoupper(fake()->bothify('???-###')),
+
+            /**
+             * Use a closure to access the assigned team_id.
+             * The $attributes array contains the evaluated values of the keys above.
+             */
+            'code' => function (array $attributes) {
+                $teamId = $attributes['team_id'];
+                $suffix = strtoupper(fake()->bothify('???-###'));
+
+                return "$teamId-$suffix";
+            },
+
             'description' => fake()->optional()->sentence(),
             'status' => fake()->randomElement(['active', 'on_hold', 'archived']),
         ];

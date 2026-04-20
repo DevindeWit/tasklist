@@ -29,7 +29,7 @@
                     </flux:sidebar.item>
 
                     <flux:sidebar.item icon="calendar-days" :href="route('tasks')"
-                        :current="request()->routeIs('tasks')" wire:navigate>
+                        :current="request()->routeIs('tasks*')" wire:navigate>
                         {{ __('Tasks') }}
                     </flux:sidebar.item>
                 @else
