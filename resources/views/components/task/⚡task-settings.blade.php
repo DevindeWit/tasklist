@@ -15,6 +15,7 @@ new class extends Component {
         $this->validate([
             'new_data.title' => 'required|string|min:3|max:255',
             'new_data.description' => 'nullable|string|max:1000',
+            'new_data.due_date' => 'nullable|date|after:now',
         ]);
 
         $this->task->update($this->new_data);
@@ -43,7 +44,7 @@ new class extends Component {
 };
 ?>
 
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-6 w-[80vw]! max-w-120">
 
     <flux:heading size="lg">Change task settings</flux:heading>
 
@@ -59,54 +60,91 @@ new class extends Component {
     <flux:field>
         <flux:label>Description</flux:label>
         <flux:textarea resize="none" :placeholder="$task->description ?? ''"
-            wire:model.debounce.500ms='new_data.description' class=" w-[80vw]! max-w-120" rows="10"></flux:textarea>
+            wire:model.debounce.500ms='new_data.description' class=" " rows="10"></flux:textarea>
     </flux:field>
 
-    {{-- Assignee --}}
-    <flux:field>
-        <flux:label>Assignee</flux:label>
+    {{-- Smaller fields (assignee, date, time, etc) --}}
+    <div class="grid grid-cols-2 gap-4 items-start justify-items-stretch">
 
-        <flux:dropdown>
-            @if (!empty($new_data['assignee_id']))
-                <flux:card class="w-fit p-0 rounded-lg">
-                    <flux:profile wire:loading.remove class="rounded-lg cursor-pointer"
-                        name="{{ auth()->user()->team->users->firstWhere('id', $new_data['assignee_id'])->name }}">
-                    </flux:profile>
-                </flux:card>
-            @else
-                <flux:button icon:trailing="chevron-down" wire:loading.remove>Select assignee</flux:button>
-            @endif
+        {{-- Due date using native picker with Flux styling --}}
+        <flux:field>
+            <flux:label>Due date</flux:label>
 
-            <flux:card wire:loading class="p-1.5 flex rounded-lg">
-                <flux:icon.loading />
-            </flux:card>
+            <flux:input type="date" wire:model="new_data.due_date" icon="calendar" {{-- Prevents the text-input cursor from appearing on desktop --}}
+                class="cursor-pointer appearance-none" {{-- Optional: Trigger the picker when clicking anywhere in the input --}} onclick="this.showPicker()" />
 
-            <flux:menu class="space-y-1.5" x-data="{
-                search: '',
-                /* Convert team users to a JS-accessible array for logic checks */
-                users: {{ auth()->user()->team->users->map(fn($u) => ['id' => $u->id, 'name' => strtolower($u->name)])->toJson() }},
-                /* Check if the current search string matches any user in the list */
-                get hasMatches() {
-                    if (!this.search) return true;
-                    return this.users.some(u => u.name.includes(this.search.toLowerCase()));
-                }
-            }">
-                <flux:input class="p-1" icon-trailing="magnifying-glass" x-model="search" {{-- Stop propagation to prevent the menu from hijacking keystrokes for navigation --}}
-                    @keydown.stop {{-- Prevent the menu from closing when the input is clicked --}} @click.stop />
+            <flux:error name="new_data.due_date" />
+        </flux:field>
 
-                <flux:separator />
+        {{-- Assignee ("smaller" >.> ) --}}
+        <flux:field>
+            <flux:label>Assignee</flux:label>
 
-                <div class="max-h-64 overflow-y-auto">
-                    @foreach (auth()->user()->team->users as $user)
-                        <flux:profile name="{{ $user->name }}" class="w-full cursor-pointer" :chevron="false"
-                            {{-- Logic: Show if search is empty, or name matches, or if NO matches exist globally (fallback) --}}
-                            x-show="! search || '{{ strtolower($user->name) }}'.includes(search.toLowerCase()) || ! hasMatches"
-                            wire:click="$set('new_data.assignee_id', {{ $user->id }})" />
-                    @endforeach
+            <flux:dropdown>
+                <div class="grid w-full min-w-0 cursor-pointer">
+                    <div class="min-w-0 overflow-hidden">
+                        <flux:card wire:loading.remove class="!w-full p-0 !min-w-0 rounded-lg cursor-pointer">
+                            <div class="-m-[1px]">
+                                <flux:profile class="!w-full !min-w-0 truncate rounded-lg cursor-pointer"
+                                    name="{{ auth()->user()->team->users->firstWhere('id', $new_data['assignee_id'])->name ?? null }}" />
+                            </div>
+                        </flux:card>
+                    </div>
+
+                    <flux:card wire:loading class="p-1.5 flex rounded-lg">
+                        <flux:icon.loading />
+                    </flux:card>
                 </div>
-            </flux:menu>
-        </flux:dropdown>
-    </flux:field>
+
+                <flux:menu class="space-y-1.5" x-data="{
+                    search: '',
+                    /**
+                     * Standardized match function to handle case-insensitivity and whitespace.
+                     */
+                    isMatch(name) {
+                        const term = this.search.toLowerCase().trim();
+                        return term === '' || name.toLowerCase().includes(term);
+                    }
+                }">
+                    {{-- Using x-on:input instead of just x-model to force reactivity --}}
+                    <flux:input class="p-1" icon-trailing="magnifying-glass" x-model="search"
+                        x-on:input="search = $event.target.value" @keydown.stop="" @click.stop=""
+                        placeholder="Search team..." />
+
+                    @if ($assigneeId = $new_data['assignee_id'] ?? null)
+                        @php $selectedUser = auth()->user()->team->users->firstWhere('id', $assigneeId); @endphp
+                        @if ($selectedUser)
+                            <flux:profile name="{{ $selectedUser->name }}" class="w-full cursor-pointer"
+                                icon:trailing="x-mark" wire:click="$set('new_data.assignee_id', null)" />
+                            <flux:separator />
+                        @endif
+                    @endif
+
+                    <div class="max-h-64 overflow-y-auto">
+                        @foreach (auth()->user()->team->users->filter(fn($u) => $u->id !== ($new_data['assignee_id'] ?? null)) as $user)
+                            {{--
+                Wrapping in a div is the 'nuclear' fix for custom components.
+                Alpine hides the div, which forces the flux:profile inside it to disappear.
+            --}}
+                            <div wire:key="wrapper-user-{{ $user->id }}"
+                                x-show="isMatch(@js($user->name))">
+                                <flux:profile name="{{ $user->name }}" class="w-full cursor-pointer"
+                                    :chevron="false"
+                                    wire:click="$set('new_data.assignee_id', {{ $user->id }})" />
+                            </div>
+                        @endforeach
+
+                        {{-- No Matches UI --}}
+                        <div x-cloak
+                            x-show="search.trim() !== '' && ! Array.from($el.parentElement.querySelectorAll('[x-show]')).some(el => el.style.display !== 'none')"
+                            class="p-4 text-center text-xs text-zinc-500 italic">
+                            No matches found for "<span x-text="search"></span>"
+                        </div>
+                    </div>
+                </flux:menu>
+            </flux:dropdown>
+        </flux:field>
+    </div>
 
 
     <div class="flex justify-between">
