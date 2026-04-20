@@ -1,10 +1,11 @@
 <?php
 
 use Livewire\Component;
+use App\Models\Project;
 
 new class extends Component {
     // Project data received through parent
-    public $project;
+    public Project $project;
 
     // Values converted to array for model.live binding in inputs
     public array $project_array = [];
@@ -15,7 +16,7 @@ new class extends Component {
     public function save_changes()
     {
         $this->validate([
-            'project_array.name' => 'required|string|max:255',
+            'project_array.name' => 'required|string|min:3|max:255',
             'project_array.description' => 'nullable|string|max:1000',
         ]);
 

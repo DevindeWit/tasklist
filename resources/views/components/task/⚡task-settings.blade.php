@@ -68,8 +68,8 @@ new class extends Component {
 
         <flux:dropdown>
             @if (!empty($new_data['assignee_id']))
-                <flux:card class="w-fit p-0 cursor-pointer rounded-lg">
-                    <flux:profile wire:loading.remove class="rounded-lg"
+                <flux:card class="w-fit p-0 rounded-lg">
+                    <flux:profile wire:loading.remove class="rounded-lg cursor-pointer"
                         name="{{ auth()->user()->team->users->firstWhere('id', $new_data['assignee_id'])->name }}">
                     </flux:profile>
                 </flux:card>
@@ -81,11 +81,29 @@ new class extends Component {
                 <flux:icon.loading />
             </flux:card>
 
-            <flux:menu>
-                @foreach (auth()->user()->team->users as $user)
-                    <flux:profile name="{{ $user->name }}" class="w-full cursor-pointer" :chevron="false"
-                        wire:click="$set('new_data.assignee_id', {{ $user->id }})" />
-                @endforeach
+            <flux:menu class="space-y-1.5" x-data="{
+                search: '',
+                /* Convert team users to a JS-accessible array for logic checks */
+                users: {{ auth()->user()->team->users->map(fn($u) => ['id' => $u->id, 'name' => strtolower($u->name)])->toJson() }},
+                /* Check if the current search string matches any user in the list */
+                get hasMatches() {
+                    if (!this.search) return true;
+                    return this.users.some(u => u.name.includes(this.search.toLowerCase()));
+                }
+            }">
+                <flux:input class="p-1" icon-trailing="magnifying-glass" x-model="search" {{-- Stop propagation to prevent the menu from hijacking keystrokes for navigation --}}
+                    @keydown.stop {{-- Prevent the menu from closing when the input is clicked --}} @click.stop />
+
+                <flux:separator />
+
+                <div class="max-h-64 overflow-y-auto">
+                    @foreach (auth()->user()->team->users as $user)
+                        <flux:profile name="{{ $user->name }}" class="w-full cursor-pointer" :chevron="false"
+                            {{-- Logic: Show if search is empty, or name matches, or if NO matches exist globally (fallback) --}}
+                            x-show="! search || '{{ strtolower($user->name) }}'.includes(search.toLowerCase()) || ! hasMatches"
+                            wire:click="$set('new_data.assignee_id', {{ $user->id }})" />
+                    @endforeach
+                </div>
             </flux:menu>
         </flux:dropdown>
     </flux:field>

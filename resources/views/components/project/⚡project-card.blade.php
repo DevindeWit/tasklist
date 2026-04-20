@@ -1,10 +1,11 @@
 <?php
 
 use Livewire\Component;
+use App\Models\Project;
 
 new class extends Component {
     // Project data received through parent
-    public $project;
+    public Project $project;
 };
 ?>
 
