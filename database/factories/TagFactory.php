@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Project;
 
 /**
  * @extends Factory<Tag>
@@ -18,9 +19,9 @@ class TagFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->word(),
-            'hex_color' => fake()->hexColor(),
+            'hex_color'   => fake()->hexColor(),
             'description' => fake()->optional()->sentence(),
+            'project_id'     => Project::factory(),
         ];
     }
 }

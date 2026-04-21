@@ -5,6 +5,7 @@ use Livewire\Attributes\Computed;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use App\Models\Task;
+use App\Models\User;
 
 new class extends Component {
     public $task;
@@ -93,7 +94,7 @@ new class extends Component {
         </div>
     @endif
 
-    <div class="overflow-x-auto -mx-2 p-2">
+    <div class="overflow-x-auto -mx-2 p-2 bg-zinc-800/20">
         {{-- Due date and assignee --}}
         @if (!empty($task->due_date) || !empty($task->assignee->name))
             <div class="flex items-center custom-scrollbar gap-2">
@@ -157,10 +158,12 @@ new class extends Component {
                                 $textColor = $brightness > 150 ? '#000000' : '#FFFFFF';
                             @endphp
 
-                            <flux:badge size="sm"
-                                style="background-color: color-mix(in srgb, {{ $tag->hex_color }} 70%, transparent); color: {{ $textColor }};">
-                                <b>{{ $tag->name }}</b>
-                            </flux:badge>
+                            <flux:tooltip content="Added by: {{ User::find($tag->pivot->added_by)->name }}">
+                                <flux:badge size="sm"
+                                    style="background-color: color-mix(in srgb, {{ $tag->hex_color }} 70%, transparent); color: {{ $textColor }};">
+                                    <b>{{ $tag->name }}</b>
+                                </flux:badge>
+                            </flux:tooltip>
                         @endforeach
                     </div>
                 @endif
@@ -170,7 +173,7 @@ new class extends Component {
     </div>
 
     {{-- Created at --}}
-    <div class="flex justify-end">
+    <div class="flex justify-end bg-zinc-800/20 -m-2 p-2">
         <flux:text class="opacity-70 hover:opacity-100 transition text-xs h-fit">{{ $task->created_at }}</flux:text>
     </div>
 
