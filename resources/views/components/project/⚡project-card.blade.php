@@ -41,7 +41,7 @@ new class extends Component {
 
     </div>
 
-    <div class="m-0 flex gap-4 *:opacity-70 *:hover:opacity-100 *:transition *:cursor-text">
+    <div class="m-0 flex flex-wrap gap-4 *:opacity-70 *:hover:opacity-100 *:transition *:cursor-text">
         <flux:tooltip content="Project code">
             <flux:badge class="text-xs" @click.stop="">
                 {{ $project->code }}

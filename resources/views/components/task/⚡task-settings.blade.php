@@ -337,7 +337,7 @@ new class extends Component {
 
                                     {{-- Trigger stays invisible until the parent div is hovered --}}
                                     <flux:modal.trigger :name="'tag-settings-' . $tag->id . '-' . $task->id"
-                                        @click.stop>
+                                        @click.stop="">
                                         <flux:button variant="ghost" icon="cog-6-tooth" icon:variant="outline"
                                             size="sm" class="invisible group-hover:visible cursor-pointer" />
                                     </flux:modal.trigger>
