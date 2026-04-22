@@ -12,13 +12,17 @@ new class extends Component {
 
     public $task_title;
 
-
     public function create_task()
     {
         try {
             $this->validate([
                 'task_title' => 'required|string|min:3|max:255',
             ]);
+
+            if ($this->task->project->status !== 'active') {
+                Flux::toast(variant: 'danger', heading: 'Project is not active!', text: 'Tasks can only be created in active projects.');
+                return;
+            }
 
             $this->dispatch('create-task');
 

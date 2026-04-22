@@ -9,7 +9,11 @@ new class extends Component {
 };
 ?>
 
-<flux:card class="space-y-6 hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer transition">
+<flux:card @class([
+    'space-y-6 transition',
+    'hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer' =>
+        $project->status === 'active',
+])>
     <div>
         <div class="flex justify-between">
             <flux:heading size="lg">{{ $project->name }}</flux:heading>

@@ -44,6 +44,11 @@ new class extends Component {
             'new_data.due_date' => 'nullable|date',
         ]);
 
+        if ($this->task->project->status !== 'active') {
+            Flux::toast(variant: 'danger', heading: 'Project is not active!', text: 'Tasks can only be edited in active projects.');
+            return;
+        }
+
         if ($this->new_data['estimate_minutes'] <= 0) {
             $this->new_data['estimate_minutes'] = null;
         }

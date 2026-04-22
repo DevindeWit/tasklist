@@ -62,10 +62,7 @@ new #[Title('Projects')] class extends Component {
 
                 <div class="grid gap-2 md:gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach (auth()->user()->team->projects->where('status', '==', 'on_hold') as $project)
-                        {{-- Wrap in a container or use wire:navigate on a link for better UX --}}
-                        <div wire:click="open_project('{{ $project->code }}')" class="cursor-pointer">
-                            <livewire:project.project-card :project="$project" wire:key="project-{{ $project->code }}" />
-                        </div>
+                        <livewire:project.project-card :project="$project" wire:key="project-{{ $project->code }}" />
                     @endforeach
                 </div>
             </div>

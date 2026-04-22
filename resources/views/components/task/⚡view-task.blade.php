@@ -54,8 +54,7 @@ new class extends Component {
 };
 ?>
 
-<flux:card class="flex flex-col gap-2 p-2 cursor-pointer hover:brightness-120 transition"
-    x-on:click="$flux.modal('task-view-{{ $task->id }}').show()">
+<div class="flex flex-col gap-2 mt-8 h-[calc(100vh-var(--spacing)*24)]">
 
     <div class="flex md:items-center md:gap-2">
         <div class="flex flex-col md:flex-row w-full gap-2">
@@ -66,23 +65,12 @@ new class extends Component {
                 </flux:badge>
             </div>
 
-            <flux:spacer class="hidden md:inline" />
+            <flux:spacer />
 
             <flux:text class="opacity-70 hover:opacity-100 transition text-xs h-fit">
                 {{ $task->project->name }} #{{ $this->projectTaskNumber }}
             </flux:text>
-
-            <flux:spacer class="hidden md:inline" />
         </div>
-
-        @if (auth()->user()->role !== 'member')
-            <flux:spacer />
-
-            <flux:modal.trigger :name="'task-settings-' . $task->id" @click.stop="">
-                <flux:button icon="cog-6-tooth" icon-variant="outline" variant="ghost" size="sm"
-                    class="cursor-pointer" />
-            </flux:modal.trigger>
-        @endif
     </div>
 
     <flux:tooltip content="{{ $task->title ?? '' }}">
@@ -90,8 +78,8 @@ new class extends Component {
     </flux:tooltip>
 
     @if (!empty($task->description))
-        <div class="bg-zinc-900/40 p-2 rounded-xl border border-zinc-800/50">
-            <div class="markdown-render max-h-50 overflow-y-auto text-sm">
+        <div class="bg-zinc-900/40 p-2 rounded-xl border border-zinc-800/50 max-w-lg">
+            <div class="markdown-render overflow-y-auto max-h-100 text-sm">
                 {!! $task->description_md !!}
             </div>
         </div>
@@ -161,11 +149,16 @@ new class extends Component {
                                 $textColor = $brightness > 150 ? '#000000' : '#FFFFFF';
                             @endphp
 
-                            <flux:tooltip content="Added by: {{ User::find($tag->pivot->added_by)->name }}">
+                            <flux:tooltip>
                                 <flux:badge size="sm"
                                     style="background-color: color-mix(in srgb, {{ $tag->hex_color }} 70%, transparent); color: {{ $textColor }};">
                                     <b>{{ $tag->name }}</b>
                                 </flux:badge>
+
+                                <flux:tooltip.content>
+                                    Added by: {{ User::find($tag->pivot->added_by)->name }} <br>
+                                    Added on: {{ $tag->pivot->updated_at->format('d-m-Y') }}
+                                </flux:tooltip.content>
                             </flux:tooltip>
                         @endforeach
                     </div>
@@ -173,6 +166,13 @@ new class extends Component {
 
             </div>
         @endif
+    </div>
+
+    {{-- Comments --}}
+    <div class="flex-1 overflow-y-auto flex flex-col gap-2">
+        @foreach ($task->comments as $comment)
+            <livewire:comment.comment :comment="$comment" />
+        @endforeach
     </div>
 
     {{-- Created at --}}
@@ -185,16 +185,4 @@ new class extends Component {
             {{ $task->created_at->format('d-m-Y') }}
         </flux:text>
     </div>
-
-    @teleport('body')
-        <div>
-            <flux:modal :name="'task-settings-' . $task->id">
-                <livewire:task.task-settings :task="$task" />
-            </flux:modal>
-
-            <flux:modal :name="'task-view-' . $task->id" flyout class="max-sm:w-screen! max-sm:max-w-screen! max-sm:p-2">
-                <livewire:task.view-task :task="$task" />
-            </flux:modal>
-        </div>
-    @endteleport
-</flux:card>
+</div>
