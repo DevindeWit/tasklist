@@ -3,11 +3,38 @@
 use Livewire\Component;
 use Flux\Flux;
 use App\Models\Task;
-use App\Models\Tag;
+use Livewire\Attributes\On;
 
 new class extends Component {
     public Task $task;
     public $new_data = [];
+
+    public array $statuses = [
+        'todo' => [
+            'icon' => 'document',
+        ],
+        'doing' => [
+            'icon' => 'document-text',
+        ],
+        'blocked' => [
+            'icon' => 'archive-box',
+        ],
+        'done' => [
+            'icon' => 'document-check',
+        ],
+    ];
+
+    public array $priorities = [
+        'low' => [
+            'color' => 'blue',
+        ],
+        'normal' => [
+            'color' => 'green',
+        ],
+        'high' => [
+            'color' => 'red',
+        ],
+    ];
 
     public function save_changes()
     {
@@ -48,7 +75,17 @@ new class extends Component {
         }
     }
 
-    public function mount(): void
+    public function toggleStatus($status)
+    {
+        $this->new_data['status'] = $status;
+    }
+
+    public function togglePriority($priority)
+    {
+        $this->new_data['priority'] = $priority;
+    }
+
+    public function reset_values()
     {
         $this->new_data = [
             'title' => $this->task->title ?? null,
@@ -61,12 +98,72 @@ new class extends Component {
             'tags' => $this->task->tags->pluck('id')->toArray(),
         ];
     }
+
+    #[On('tag-updated')]
+    public function update_tags()
+    {
+        $this->task->unsetRelation('tags');
+    }
+
+    public function mount()
+    {
+        $this->reset_values();
+    }
 };
 ?>
 
 <div class="flex flex-col gap-6 w-[80vw]! max-w-120">
 
     <flux:heading size="lg">Change task settings</flux:heading>
+
+    <div class="grid grid-cols-2 gap-4 items-start justify-items-stretch">
+
+        {{-- Status --}}
+        <div class="w-full">
+            <flux:field>
+                <flux:label>Status</flux:label>
+
+                <flux:dropdown>
+                    <flux:button class="w-full !cursor-pointer" icon:variant="outline"
+                        icon="{{ $statuses[$new_data['status']]['icon'] }}" icon:trailing="chevron-down">
+                        {{ $new_data['status'] }}
+                    </flux:button>
+
+                    <flux:menu>
+                        @foreach ($statuses as $type => $status)
+                            <flux:menu.item class="!cursor-pointer" icon:variant="outline"
+                                icon="{{ $statuses[$type]['icon'] }}" wire:click="toggleStatus('{{ $type }}')">
+                                {{ $type }}
+                            </flux:menu.item>
+                        @endforeach
+                    </flux:menu>
+                </flux:dropdown>
+            </flux:field>
+        </div>
+
+        {{-- Priority --}}
+        <div class="w-full">
+            <flux:field>
+                <flux:label>Priority</flux:label>
+
+                <flux:dropdown>
+                    <flux:button class="w-full !cursor-pointer" icon:trailing="chevron-down">
+                        <flux:badge color="{{ $priorities[$new_data['priority']]['color'] }}">
+                            {{ $new_data['priority'] }}
+                        </flux:badge>
+                    </flux:button>
+
+                    <flux:menu>
+                        @foreach ($priorities as $type => $data)
+                            <flux:menu.item class="!cursor-pointer" wire:click="togglePriority('{{ $type }}')">
+                                <flux:badge color="{{ $data['color'] }}">{{ $type }}</flux:badge>
+                            </flux:menu.item>
+                        @endforeach
+                    </flux:menu>
+                </flux:dropdown>
+            </flux:field>
+        </div>
+    </div>
 
     {{-- Title --}}
     <flux:field>
@@ -149,9 +246,11 @@ new class extends Component {
 
                 <div class="max-h-64 overflow-y-auto">
                     @foreach ($teamUsers->filter(fn($u) => $u->id !== $assigneeId) as $user)
-                        <div wire:key="wrapper-user-{{ $user->id }}" x-show="isMatch(@js($user->name))">
+                        <div wire:key="wrapper-user-{{ $user->id }}"
+                            x-show="isMatch(@js($user->name))">
                             <flux:profile name="{{ $user->name }}" class="w-full cursor-pointer"
-                                :chevron="false" wire:click="$set('new_data.assignee_id', {{ $user->id }})" />
+                                :chevron="false"
+                                wire:click="$set('new_data.assignee_id', {{ $user->id }})" />
                         </div>
                     @endforeach
                 </div>
@@ -185,11 +284,13 @@ new class extends Component {
                     $textColor = $brightness > 150 ? '#000000' : '#FFFFFF';
                 @endphp
 
-                <flux:badge size="lg"
-                    style="background-color: color-mix(in srgb, {{ $tag->hex_color }} 70%, transparent); color: {{ $textColor }};">
-                    <b>{{ $tag->name }}</b>
-                    <flux:badge.close class="cursor-pointer" wire:click="toggleTag({{ $tag->id }})" />
-                </flux:badge>
+                <flux:modal.trigger :name="'tag-settings-' . $tag->id . '-' . $task->id">
+                    <flux:badge size="lg" class="cursor-pointer opacity-80 hover:opacity-100 transition"
+                        style="background-color: color-mix(in srgb, {{ $tag->hex_color }} 70%, transparent); color: {{ $textColor }};">
+                        <b>{{ $tag->name }}</b>
+                        <flux:badge.close class="cursor-pointer" wire:click.stop="toggleTag({{ $tag->id }})" />
+                    </flux:badge>
+                </flux:modal.trigger>
             @endforeach
 
             <flux:dropdown>
@@ -205,9 +306,11 @@ new class extends Component {
                     <flux:input icon-trailing="magnifying-glass" x-model="search" @keydown.stop="" @click.stop=""
                         placeholder="Search tags..." />
 
-                    <flux:modal.trigger :name="'create-tag-' . $task->id">
-                        <flux:menu.item icon="plus" class="cursor-pointer w-full">New tag</flux:menu.item>
-                    </flux:modal.trigger>
+                    {{-- Not using default <flux:modal.trigger> because modal is in task/kanban/board.blade.php to prevent duplicate modals --}}
+                    <flux:menu.item icon="plus" class="cursor-pointer w-full"
+                        @click="$flux.modal('create-tag').show()">
+                        New tag
+                    </flux:menu.item>
 
                     <flux:separator class="my-1.5" />
 
@@ -235,46 +338,10 @@ new class extends Component {
                                     {{-- Trigger stays invisible until the parent div is hovered --}}
                                     <flux:modal.trigger :name="'tag-settings-' . $tag->id . '-' . $task->id"
                                         @click.stop>
-                                        <flux:button variant="ghost" icon="cog-6-tooth" icon:variant="outline" size="sm"
-                                            class="invisible group-hover:visible cursor-pointer" />
+                                        <flux:button variant="ghost" icon="cog-6-tooth" icon:variant="outline"
+                                            size="sm" class="invisible group-hover:visible cursor-pointer" />
                                     </flux:modal.trigger>
                                 </div>
-
-
-
-
-
-                                {{--
-                                <flux:menu.checkbox wire:click="toggleTag({{ $tag->id }})" class="flex py-0.5">
-
-                                    @php
-                                        $hex = ltrim($tag->hex_color, '#');
-
-                                        $r = hexdec(substr($hex, 0, 2));
-                                        $g = hexdec(substr($hex, 2, 2));
-                                        $b = hexdec(substr($hex, 4, 2));
-
-                                        $brightness = 0.299 * $r + 0.587 * $g + 0.114 * $b;
-
-                                        $textColor = $brightness > 150 ? '#000000' : '#FFFFFF';
-                                    @endphp
-
-                                    <flux:badge
-                                        style="background-color: color-mix(in srgb, {{ $tag->hex_color }} 70%, transparent); color: {{ $textColor }};">
-                                        <b>{{ $tag->name }}</b>
-                                    </flux:badge>
-
-                                    <flux:spacer />
-
-                                    <flux:modal.trigger :name="'tag-settings-' . $tag->id . '-' . $task->id"
-                                        @click.stop="">
-                                        <flux:button variant="ghost" icon="cog-6-tooth" icon:variant="outline"
-                                            size="sm" class="cursor-pointer" />
-                                    </flux:modal.trigger>
-
-                                </flux:menu.checkbox>
-                                --}}
-
                             </div>
                         @endforeach
                     </div>
@@ -292,7 +359,7 @@ new class extends Component {
 
         <div>
             <flux:modal.close>
-                <flux:button variant="ghost">Close</flux:button>
+                <flux:button variant="ghost" wire:click='reset_values'>Close</flux:button>
             </flux:modal.close>
 
             <flux:button variant="primary" wire:click='save_changes'>Save changes</flux:button>
@@ -305,20 +372,11 @@ new class extends Component {
                 <livewire:task.delete-task :task_id="$task->id ?? 'new'" wire:key="delete-task-{{ $task->id ?? 'new' }}" />
             </flux:modal>
 
-            <flux:modal :name="'create-tag-' . $task->id">
-                <livewire:tag.create-tag />
-            </flux:modal>
-
-
-
-            @php
-                $allTags = $task->project->tags;
-            @endphp
-
             @foreach ($allTags as $tag)
                 <flux:modal :name="'tag-settings-' . $tag->id . '-' . $task->id"
                     wire:key="tag-settings-{{ $tag->id }}">
-                    <livewire:tag.tag-settings :tag="$tag" wire:key="tag-settings-component-{{ $tag->id }}" />
+                    <livewire:tag.tag-settings :tag="$tag" :task="$task"
+                        wire:key="tag-settings-component-{{ $tag->id }}-{{ $task->id }}" />
                 </flux:modal>
             @endforeach
         </div>

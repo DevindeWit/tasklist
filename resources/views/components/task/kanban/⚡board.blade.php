@@ -6,7 +6,7 @@ use App\Models\Project;
 
 new class extends Component {
     // retrieved from parent
-    public $project;
+    public Project $project;
 
     public $tasks;
 
@@ -137,8 +137,14 @@ new class extends Component {
     @endforeach
 
     @teleport('body')
-        <flux:modal name="task-settings-new">
-            <livewire:task.task-settings :task="$tasks->sortByDesc('id')->first()" />
-        </flux:modal>
+        <div>
+            <flux:modal name="task-settings-new">
+                <livewire:task.task-settings :task="$tasks->sortByDesc('id')->first()" />
+            </flux:modal>
+
+            <flux:modal name="create-tag">
+                <livewire:tag.create-tag :project="$project" />
+            </flux:modal>
+        </div>
     @endteleport
 </div>
