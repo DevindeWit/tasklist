@@ -2,7 +2,6 @@
 
 use Livewire\Component;
 use App\Models\Project;
-use Flux\Flux;
 
 new class extends Component {
     // Project data received through parent
@@ -10,11 +9,11 @@ new class extends Component {
 
     public function delete_project()
     {
-        $this->project->update(['status' => 'archived']);
+        $this->project->delete();
 
         $this->redirect(route('projects'), navigate: true);
 
-        Flux::toast(variant: 'success', heading: 'Project deleted', text: "Your project \"{$this->project->name}\" was moved to trash.");
+        Flux::toast(variant: 'success', heading: 'Project deleted', text: "Your project \"{$this->project->name}\" has been permanently deleted.");
     }
 };
 ?>
@@ -22,7 +21,7 @@ new class extends Component {
 <div class="space-y-6">
     <div>
         <flux:heading size="lg">Are you sure?</flux:heading>
-        <flux:text class="mt-2">Deleted projects are moved to trash.</flux:text>
+        <flux:text class="mt-2">This will PERMANENTLY delete this project.</flux:text>
     </div>
 
     <div class="flex justify-between">

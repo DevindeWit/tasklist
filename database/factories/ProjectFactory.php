@@ -38,7 +38,9 @@ class ProjectFactory extends Factory
             },
 
             'description' => fake()->optional()->sentence(),
-            'status' => fake()->randomElement(['active', 'on_hold', 'archived']),
+            'status' => fake()->boolean(75)
+                ? fake()->randomElement(['active', 'on_hold'])
+                : 'archived',
         ];
     }
 }

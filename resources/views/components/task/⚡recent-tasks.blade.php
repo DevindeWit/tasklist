@@ -14,7 +14,7 @@ new class extends Component {
 
 <div class="flex flex-col gap-4">
     <flux:heading size="xl">Recent tasks:</flux:heading>
-    <div class="border-solid border border-zinc-600 p-2 w-full min-h-100 rounded-xl flex justify-center items-center">
+    <div class="border-solid border border-zinc-600 p-2 w-full min-h-100 rounded-xl flex overflow-x-auto justify-center items-center">
         @if ($tasks->isEmpty())
             <div class="flex flex-col gap-2 items-center text-center">
                 <flux:icon.user />
