@@ -189,7 +189,7 @@ new class extends Component {
     @teleport('body')
         <div>
             <flux:modal :name="'task-settings-' . $task->id">
-                <livewire:task.task-settings :task="$task" />
+                <livewire:task.modals.task-settings :task="$task" />
             </flux:modal>
 
             <flux:modal :name="'task-view-' . $task->id" flyout class="max-sm:w-screen! max-sm:max-w-screen! max-sm:p-2">

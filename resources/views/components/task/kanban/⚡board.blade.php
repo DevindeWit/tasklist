@@ -139,7 +139,7 @@ new class extends Component {
     @teleport('body')
         <div>
             <flux:modal name="task-settings-new">
-                <livewire:task.task-settings :task="$tasks->sortByDesc('id')->first()" />
+                <livewire:task.modals.task-settings :task="$tasks->sortByDesc('id')->first()" />
             </flux:modal>
 
             <flux:modal name="create-tag">

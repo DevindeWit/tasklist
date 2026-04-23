@@ -19,7 +19,7 @@ new class extends Component {
                 'task_title' => 'required|string|min:3|max:255',
             ]);
 
-            if ($this->task->project->status !== 'active') {
+            if ($this->project->status !== 'active') {
                 Flux::toast(variant: 'danger', heading: 'Project is not active!', text: 'Tasks can only be created in active projects.');
                 return;
             }

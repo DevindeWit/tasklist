@@ -374,7 +374,7 @@ new class extends Component {
     @teleport('body')
         <div>
             <flux:modal :name="'delete-task-' . ($task->id ?? 'new')">
-                <livewire:task.delete-task :task_id="$task->id ?? 'new'" wire:key="delete-task-{{ $task->id ?? 'new' }}" />
+                <livewire:task.modals.delete-task :task="$task ?? 'new'" wire:key="delete-task-{{ $task->id ?? 'new' }}" />
             </flux:modal>
 
             @foreach ($allTags as $tag)

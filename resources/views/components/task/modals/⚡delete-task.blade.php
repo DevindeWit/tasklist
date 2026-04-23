@@ -2,27 +2,23 @@
 
 use Livewire\Component;
 use Livewire\Attributes\Locked;
-use App\Models\Task;
 use Flux\Flux;
 
 new class extends Component {
     #[Locked]
-    public $task_id;
+    public $task;
 
     public function delete_task()
     {
-        $this->validate([
-            'task_id' => 'required|exists:tasks,id|numeric',
-        ]);
-
         if ($this->task->project->status !== 'active') {
             Flux::toast(variant: 'danger', heading: 'Project is not active!', text: 'Tasks can only be deleted in active projects.');
             return;
         }
 
-        Task::findOrFail($this->task_id)->delete();
+        $this->task->delete();
 
-        Flux::toast(variant: 'success', heading: 'Deleted task', text: 'Task #' . $this->task_id . ' deleted successfully.');
+        Flux::toast(variant: 'success', heading: 'Deleted task', text: 'Task #' . $this->task->id . ' deleted successfully.');
+        Flux::modals()->close();
 
         $this->dispatch('refresh-kanban');
     }
